@@ -1,47 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:newproject/demodata.dart';
+import 'package:newproject/home_page.dart';
 import 'stockwidget.dart';
 import 'settingscreen.dart';
+import 'resource/login_screen.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+bool isDarkTheme = false;
+
+ThemeData lightTheme = ThemeData(
+  brightness: Brightness.light,
+  // backgroundColor: Colors.white,
+  // appBarTheme: AppBarTheme(
+  //   color: Colors.lightBlue,
+  // ),
+  // textSelectionColor: Colors.orange,
+  // inputDecorationTheme: InputDecorationTheme(
+  //   border: OutlineInputBorder(
+  //     borderSide: BorderSide(
+  //       color: Colors.black38,
+  //     ),
+  //   ),
+  //   errorStyle: TextStyle(
+  //     color: Colors.red,
+  //   ),
+  // ),
+  // primarySwatch: Colors.blueGrey,
+  // primaryTextTheme: TextTheme(
+  //   body1: TextStyle(
+  //     color: Colors.black,
+  //     textBaseline: TextBaseline.alphabetic,
+  //   ),
+  // ),
+);
+
+ThemeData darkTheme = ThemeData(
+  brightness: Brightness.dark,
+  // backgroundColor: Colors.black,
+  // appBarTheme: AppBarTheme(
+  //   color: Colors.black26,
+  // ),
+  // textSelectionColor: Colors.orange,
+  // inputDecorationTheme: InputDecorationTheme(
+  //   border: OutlineInputBorder(
+  //     borderSide: BorderSide(
+  //       color: Colors.white,
+  //     ),
+  //   ),
+  //   errorStyle: TextStyle(
+  //     color: Colors.orange,
+  //   ),
+  // ),
+  // primarySwatch: Colors.black,
+  // primaryTextTheme: TextTheme(
+  //   body1: TextStyle(
+  //     color: Colors.white,
+  //     textBaseline: TextBaseline.alphabetic,
+  //   ),
+  // ),
+);
+
+class MyApp extends StatefulWidget {
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  bool isDarkThemeEnabled = isDarkTheme;
+  void toggleTheme() {
+    isDarkThemeEnabled = isDarkTheme = !isDarkThemeEnabled;
+    setState(() {});
+  }
+
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage() ,
+      theme: isDarkTheme ? darkTheme : lightTheme,
+      initialRoute: '/login',
+      routes: <String, WidgetBuilder>{
+        '/login' : (context) => LoginScreen(),
+        '/home' : (context) => MyHomePage(),
+        '/setting' : (context) => SettingScreen(),
+      }
     );
   }
 }
-Theme mainTheme = Theme(data: ThemeData() , child: null);
-List<StockCode> data = [
-  StockCode('APPL', 'Apple Inc Company', 12),
-  StockCode('AMZ', 'Amazon', 12.36),
-  StockCode('GGL', 'Alphabet.Inc', 12),
-  StockCode('APPL', 'Apple Inc Company', 12),
-  StockCode('AMZ', 'Amazon', 12.36),
-  StockCode('GGL', 'Alphabet.Inc', 12),
-  StockCode('APPL', 'Apple Inc Company', 12),
-  StockCode('AMZ', 'Amazon', 12.36),
-  StockCode('GGL', 'Alphabet.Inc', 12),
-  StockCode('APPL', 'Apple Inc Company', 12),
-  StockCode('AMZ', 'Amazon', 12.36),
-  StockCode('GGL', 'Alphabet.Inc', 12),
-  StockCode('APPL', 'Apple Inc Company', 12),
-  StockCode('AMZ', 'Amazon', 12.36),
-  StockCode('GGL', 'Alphabet.Inc', 12),
-];
 
-class MyHomePage extends StatefulWidget {
-  @override
-  MyHomePage({Key key}) : super(key: key);
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-AppBar createMainAppBar(String x) => AppBar(
+createMainAppBar(String x) => AppBar(
+      textTheme: isDarkTheme ? darkTheme.textTheme : lightTheme.textTheme,
       centerTitle: true,
       title: Title(
         child: Row(
@@ -65,58 +113,3 @@ AppBar createMainAppBar(String x) => AppBar(
       ),
       backgroundColor: Colors.white,
     );
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  //List<StockWidget> stocklist;
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Title(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Icon(
-                Icons.android,
-                color: Colors.blueAccent,
-                size: 20,
-              ),
-              Text(
-                "Main App",
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 20,
-                  color: Colors.blueGrey,
-                ),
-              ),
-              Spacer(),
-              FlatButton(
-                
-                shape: CircleBorder(
-                  side: BorderSide.none,
-                ),
-                child: Icon(Icons.menu),
-                //color: Colors.transparent,
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SettingScreen()));
-                }, //Navigator(),
-              ),
-            ],
-          ),
-          color: Colors.blue,
-        ),
-        backgroundColor: Colors.white,
-      ),
-      body: Container(
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          children: data.map((f) {
-            return StockWidget(f);
-          }).toList(),
-        ),
-      ),
-    );
-  }
-}

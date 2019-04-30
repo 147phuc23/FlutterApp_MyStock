@@ -8,48 +8,61 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   @override
+  bool darkThemeEnable = isDarkTheme;
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Color.fromARGB(220,242, 242, 242),
-        
+    return Scaffold(
+        backgroundColor: Color.fromARGB(220, 242, 242, 242),
         appBar: createMainAppBar('Setting'),
         body: ListView(children: <Widget>[
           Container(
-            margin: EdgeInsets.all(14),
-            color: Colors.white,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20)),
+            margin: EdgeInsets.all(10),
             child: ListTile(
-              title: Text('Theme'),
-              subtitle: Text('Black'),
-              enabled: true,
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.all(14),
-            color: Colors.white,
-            child: ListTile(
-              trailing: Switch(value: true,onChanged: (bool x) {},),
+              trailing: Switch(
+                value: true,
+                onChanged: (bool x) {},
+              ),
               title: Text('Notification'),
               enabled: true,
             ),
           ),
           Container(
-            margin: EdgeInsets.all(14),
-            color: Colors.white,
+            margin: EdgeInsets.all(10),
             child: ListTile(
-              title: Text('Account'),
+              trailing: Switch(
+                value: true,
+                onChanged: (bool darkThemeEnable) {
+                  
+                },
+              ),
+              title: Text('Dark Theme'),
               enabled: true,
             ),
           ),
           Container(
-            margin: EdgeInsets.all(14),
-            color: Colors.white,
+            margin: EdgeInsets.all(10),
+            child: ListTile(
+              title: Text('Account'),
+              onTap: () {
+                /*
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AccountSettingScreen(),
+                    ));*/
+              },
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
             child: ListTile(
               title: Text('About us'),
               enabled: true,
             ),
           ),
           Container(
-            margin: EdgeInsets.all(14),
-            color: Colors.white,
+            margin: EdgeInsets.all(10),
             child: ListTile(
               title: Text('Privacy'),
               enabled: true,
