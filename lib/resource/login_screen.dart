@@ -19,8 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacementNamed(context, '/home');
   }
 
-  bool isValid() {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

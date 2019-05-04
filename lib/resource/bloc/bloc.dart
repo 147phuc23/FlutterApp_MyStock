@@ -8,6 +8,7 @@ class AuthBloc {
   Stream get passStream => _passController.stream;
 
   bool isValidInfo(String usr, String pwd){
+    return true;
     if (!Validation.isValidUserName(usr)) {
       _userController.sink.addError("Tên đăng nhập không hợp lệ!");
       return false;
@@ -30,7 +31,7 @@ class AuthBloc {
 
 
 class Validation {
-  static bool isValidUserName(String usrname) => usrname.contains('@') && usrname.length > 6;
-  static bool isValidPassword(String pwd) => pwd.length > 6;
+  static bool isValidUserName(String usrname) =>true;// usrname.contains('@') && usrname.length > 6;
+  static bool isValidPassword(String pwd) =>true;// pwd.length > 6;
 }
 

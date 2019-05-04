@@ -6,11 +6,15 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:io';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import './database_quote.dart';
 
 //Library written
 import './database_stock_exchange.dart';
 import './database_company_infor.dart';
 import './database_symbol.dart';
+import './database_1m_chart.dart';
+import './database_1d_chart.dart';
 
 class DbProvider {
   DbProvider._();
@@ -33,6 +37,7 @@ class DbProvider {
       _database.insert("StockExchange", {"mic": "alreadyBeenInitialize"});
     return _database;
   }
+  List<dynamic> listDbChart;
 
   initializeDatabase() async {
     await initializeAllStockExchange();
@@ -46,10 +51,6 @@ class DbProvider {
     print("Check if table already existed");
     print(f);
   }
-
-  List<DbStockExchange> _listOfStockExchange;
-  List<DbCompanyInfor> _listOfCompanyInfor;
-  List<DbSymbol> _listOfSymbol;
 
   initDB() async {
     print("Init DB");
@@ -104,7 +105,6 @@ class DbProvider {
     http.Response jsonResponse = await http.get(urlJson);
     List<DbStockExchange> listStockExchange =
         dbStockExchangeFromJson(jsonResponse.body);
-    _listOfStockExchange = listStockExchange;
     final db = await database;
     for (var f in listStockExchange) {
       if (f != null) {
@@ -128,7 +128,6 @@ class DbProvider {
     http.Response jsonResponse = await http.get(urlJson);
     List<DbStockExchange> listStockExchange =
         dbStockExchangeFromJson(jsonResponse.body);
-    _listOfStockExchange = listStockExchange;
 
     for (var f in listStockExchange) {
       if (f != null) {
@@ -141,7 +140,6 @@ class DbProvider {
     String urlJson = "https://api.iextrading.com/1.0/ref-data/symbols";
     http.Response jsonResponse = await http.get(urlJson);
     List<DbSymbol> listSymbols = dbSymbolFromJson(jsonResponse.body);
-    _listOfSymbol = listSymbols;
     final db = await database;
     for (var f in listSymbols) {
       if (f != null) {
@@ -167,39 +165,38 @@ class DbProvider {
     String urlJson = "https://api.iextrading.com/1.0/ref-data/symbols";
     http.Response jsonResponse = await http.get(urlJson);
     List<DbSymbol> listSymbols = dbSymbolFromJson(jsonResponse.body);
-    _listOfSymbol = listSymbols;
     for (var f in listSymbols) {
       if (f != null) {
         var res = await db.insert("Symbol", f.toMap());
       }
     }
   }
-
+  //Return all stockexchange that being currently supported by IEX
   getAllStockExchange() async {
     final db = await database;
     var res = await db.query("StockExchange");
     return res.isEmpty ? null : res;
   }
-
+  //Return all symbols that being currently available in IEX data
   getAllSymbol() async {
     final db = await database;
     var res = await db.query("Symbol");
     return res.isEmpty ? null : res;
   }
-
-  getStockExchange(String mic) async {
+  //Return stockExchange with mic = symbol
+  searchStockExchange(String mic) async {
     final db = await database;
     var res =
         await db.query("StockExchange", where: "mic= ?", whereArgs: [mic]);
-    return res.isNotEmpty ? res.first : null;
+    return res.isNotEmpty ? res : null;
   }
-
+  //Return symbol info
   searchSymbol(String symbol) async {
     final db = await database;
     var res = await db.rawQuery("SELECT * FROM Symbol WHERE symbol LIKE '%$symbol%'");
-    return res;
+    return res.isNotEmpty?res:null;
   }
-
+  //Return company info that have symbol required
   getCompanyInfo(String symbol) async {
     final db = await database;
     String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/company";
@@ -208,7 +205,7 @@ class DbProvider {
     if (checkDb.isEmpty) {
       http.Response jsonResponse = await http.get(urlJson);
       if (jsonResponse.body.toLowerCase() == "unknown symbol") {
-        throw ("Wrong Symbol");
+        return null;
       }
       DbCompanyInfor info = dbCompanyInforFromJson(jsonResponse.body);
       db.insert("CompanyInfo", info.toMapDatabase());
@@ -219,7 +216,108 @@ class DbProvider {
     }
   }
 
-  getChartInfo_1m(String symbol) async {
-    final db = await database;
+  Future<List<Map<String,dynamic>>> getChartInfo_1m(String symbol) async {
+    var db = await database;
+    List<Map<String, dynamic>> checkSymbol = await db.query(
+        "Symbol", where: "symbol=?", whereArgs: [symbol]);
+    if (checkSymbol.isEmpty) {
+      return null;
+    } else{
+      if(DbSymbol.fromMap(checkSymbol.first).isEnabled==false){
+        return null;
+      }
+    }
+    String urlJson = "https://api.iextrading.com/1.0/stock/${symbol}/chart/1m";
+    http.Response response = await http.get(urlJson);
+    List<DbChart1M> chart = dbChart1MFromJson(response.body);
+    chart.sort((a, b) => a.date.compareTo(b.date));
+    List<Map<String, dynamic>> chartMap= new List<Map<String,dynamic>>();
+    for (int i = 0; i < chart.length; i++) {
+      chartMap.add(chart[i].toMapRequired());
+    }
+    return chartMap.isNotEmpty ? chartMap : [];
+  }
+
+  Future<List<Map<String,dynamic>>> getChartInfo_1d(String symbol) async {
+    var db = await database;
+    List<Map<String, dynamic>> checkSymbol = await db.query(
+        "Symbol", where: "symbol=?", whereArgs: [symbol]);
+    if (checkSymbol.isEmpty) {
+      return null;
+    } else{
+      if(DbSymbol.fromMap(checkSymbol.first).isEnabled==false){
+        return null;
+      }
+    }
+    String urlJson = "https://api.iextrading.com/1.0/stock/${symbol}/chart/1d?chartInterval=10";
+    http.Response response = await http.get(urlJson);
+    List<DbChart1D> chart = dbChart1DFromJson(response.body);
+    List<Map<String, dynamic>> chartMap=new List<Map<String,dynamic>>() ;
+    for (int i = 0; i < chart.length; i++) {
+      if(chart[i]!=null)
+        chartMap.add(chart[i].toMapRequired());
+    }
+    return chartMap.isNotEmpty ? chartMap : [];
+  }
+
+  Future<List<Map<String,dynamic>>> getChartInfo_3d(String symbol) async {
+    var db = await database;
+    List<Map<String, dynamic>> checkSymbol = await db.query(
+        "Symbol", where: "symbol=?", whereArgs: [symbol]);
+    if (checkSymbol.isEmpty) {
+      return null;
+    } else{
+      if(DbSymbol.fromMap(checkSymbol.first).isEnabled==false){
+        return null;
+      }
+    }
+    DateTime time= new DateTime.now();
+    time = time.subtract(new Duration(days:2));
+    var formatter= new DateFormat('yyyyMMdd');
+    String dateFormatter= formatter.format(time);
+    String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/chart/date/$dateFormatter?chartInterval=10";
+    http.Response response = await http.get(urlJson);
+    List<DbChart1D> chart = dbChart1DFromJson(response.body);
+    List<Map<String, dynamic>> chartMap=new List<Map<String,dynamic>>() ;
+    for (int i = 0; i < chart.length; i++) {
+      if(chart[i]!=null)
+        chartMap.add(chart[i].toMapRequired());
+    }
+    time=DateTime.now();
+    time=time.subtract(new Duration(days:1));
+    dateFormatter= formatter.format(time);
+    urlJson = "https://api.iextrading.com/1.0/stock/$symbol/chart/date/$dateFormatter?chartInterval=10";
+    response = await http.get(urlJson);
+    chart = dbChart1DFromJson(response.body);
+    for (int i = 0; i < chart.length; i++) {
+      if(chart[i]!=null)
+        chartMap.add(chart[i].toMapRequired());
+    }
+    urlJson = "https://api.iextrading.com/1.0/stock/$symbol/chart/1d?chartInterval=10";
+    response = await http.get(urlJson);
+    chart = dbChart1DFromJson(response.body);
+    for (int i = 0; i < chart.length; i++) {
+      if(chart[i]!=null)
+        chartMap.add(chart[i].toMapRequired());
+    }
+    return chartMap.isNotEmpty ? chartMap : [];
+  }
+
+  Future<Map<String,dynamic>> getRealTimeInfo(String symbol) async{
+    var db=await database;
+    List<Map<String, dynamic>> checkSymbol = await db.query(
+        "Symbol", where: "symbol=?", whereArgs: [symbol]);
+    if (checkSymbol.isEmpty) {
+      return null;
+    } else{
+      if(checkSymbol.first["isEnabled"].toString().toLowerCase()=="false"){
+        return null;
+      }
+    }
+    String urlJson ="https://api.iextrading.com/1.0/stock/$symbol/quote";
+    http.Response response=await http.get(urlJson);
+    DbQuote quote = dbQuoteFromJson(response.body);
+    print(quote.toMapRequired());
+    return quote.toMapRequired();
   }
 }

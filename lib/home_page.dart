@@ -24,7 +24,6 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Icon(
                 Icons.android,
-                color: Colors.blueAccent,
                 size: 20,
               ),
               Text(
