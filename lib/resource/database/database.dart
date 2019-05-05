@@ -1,13 +1,13 @@
 //Import library
 import 'dart:async';
 
+
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import './database_quote.dart';
 
 //Library written
 import './database_stock_exchange.dart';
@@ -15,12 +15,15 @@ import './database_company_infor.dart';
 import './database_symbol.dart';
 import './database_1m_chart.dart';
 import './database_1d_chart.dart';
+import './database_quote.dart';
 
 class DbProvider {
   DbProvider._();
 
   static final DbProvider db = DbProvider._();
   static Database _database;
+
+  //Getter lay doi tuong database
   Future<Database> get database async {
     if (_database != null) {
       return _database;
@@ -37,13 +40,16 @@ class DbProvider {
       _database.insert("StockExchange", {"mic": "alreadyBeenInitialize"});
     return _database;
   }
-  List<dynamic> listDbChart;
 
+  //Ham goi khoi tao cho database
   initializeDatabase() async {
     await initializeAllStockExchange();
     await initializeAllSymbol();
   }
 
+
+  //Ham dung de debug khong su dung !!!
+  //Kiem tra xem table trong database da duoc tao chua
   checkTableExist() async {
     final db = await database;
     var f = await db.rawQuery(
@@ -52,6 +58,7 @@ class DbProvider {
     print(f);
   }
 
+  //Ham khoi tao cho getter
   initDB() async {
     print("Init DB");
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
@@ -100,6 +107,7 @@ class DbProvider {
     });
   }
 
+  //Ham du phong, dung de cap nhat lai cho table StockExchange
   updateAllStockExchange() async {
     String urlJson = "https://api.iextrading.com/1.0/market";
     http.Response jsonResponse = await http.get(urlJson);
@@ -114,6 +122,7 @@ class DbProvider {
     }
   }
 
+  //Ham khoi tao cho table StockExchange
   initializeAllStockExchange() async {
     final db = await database;
     List<Map<String, dynamic>> checkDb = await db.query("StockExchange",
@@ -136,6 +145,7 @@ class DbProvider {
     }
   }
 
+  //Ham du phong, dung de cap nhat cho table Symbol
   updateAllSymbol() async {
     String urlJson = "https://api.iextrading.com/1.0/ref-data/symbols";
     http.Response jsonResponse = await http.get(urlJson);
@@ -152,6 +162,7 @@ class DbProvider {
     }
   }
 
+  //Ham khoi tao cho table Symbol
   initializeAllSymbol() async {
     final db = await database;
     List<Map<String, dynamic>> checkDb = await db.query("Symbol",
@@ -171,33 +182,111 @@ class DbProvider {
       }
     }
   }
-  //Return all stockexchange that being currently supported by IEX
-  getAllStockExchange() async {
+
+
+
+
+
+  //Tu day tro di la cac ham tra data ve
+
+
+
+
+
+
+
+
+
+  //Ham tra ve tat ca StockExchange ma API ho tro
+  //Map<String,dynamic> duoc tra ve co dang:
+  //{
+  //  //      "mic": mic,
+  //  //      "tapeId": tapeId,
+  //  //      "venueName": venueName,
+  //  //      "volume": volume,
+  //  //      "tapeA": tapeA,
+  //  //      "tapeB": tapeB,
+  //  //      "tapeC": tapeC,
+  //  //      "marketPercent": marketPercent,
+  //  //      "lastUpdated": lastUpdated
+  //  //    };
+  Future<List<Map<String,dynamic>>> getAllStockExchange() async {
     final db = await database;
     var res = await db.query("StockExchange");
     return res.isEmpty ? null : res;
   }
-  //Return all symbols that being currently available in IEX data
-  getAllSymbol() async {
+
+  //Ham dung tra ve tat ca symbols ma API ho tro
+  //Map<String,dynamic> duoc tra ve co dang:
+  //{
+  //      "symbol": symbol,
+  //      "name": name,
+  //      "date":dateTime, (co dang YYYYMMDD)
+  //      "isEnabled": isEnabled,
+  //      "type": typeValues.reverse[type],
+  //      "iexId": iexId,
+  //    };
+  Future<List<Map<String,dynamic>>> getAllSymbol() async {
     final db = await database;
     var res = await db.query("Symbol");
     return res.isEmpty ? null : res;
   }
-  //Return stockExchange with mic = symbol
-  searchStockExchange(String mic) async {
+
+  //Ham tra ve thong tin cua san chung khoan (StockExchange), nhan vao ma san (mic)
+  //Map<String,dynamic> duoc tra ve co dang:
+  //{
+  //      "mic": mic,
+  //      "tapeId": tapeId,
+  //      "venueName": venueName,
+  //      "volume": volume,
+  //      "tapeA": tapeA,
+  //      "tapeB": tapeB,
+  //      "tapeC": tapeC,
+  //      "marketPercent": marketPercent,
+  //      "lastUpdated": lastUpdated
+  //    };
+  Future<List<Map<String,dynamic>>> searchStockExchange(String mic) async {
     final db = await database;
     var res =
         await db.query("StockExchange", where: "mic= ?", whereArgs: [mic]);
     return res.isNotEmpty ? res : null;
   }
-  //Return symbol info
-  searchSymbol(String symbol) async {
+
+  //Ham dung de tim kiem thong tin symbols, nhan vao 1 chuoi ky tu
+  //Ham se tim kiem trong database cac symbol co chua cac ky tu nhan vao
+  //Map<String,dynamic> duoc tra ve co dang
+  //{
+  //      "symbol": symbol,
+  //      "name": name,
+  //      "date":dateTime, (co dang YYYYMMDD)
+  //      "isEnabled": isEnabled,
+  //      "type": typeValues.reverse[type],
+  //      "iexId": iexId,
+  //    };
+  Future<List<Map<String,dynamic>>> searchSymbol(String symbol) async {
     final db = await database;
     var res = await db.rawQuery("SELECT * FROM Symbol WHERE symbol LIKE '%$symbol%'");
     return res.isNotEmpty?res:null;
   }
-  //Return company info that have symbol required
-  getCompanyInfo(String symbol) async {
+
+  //Ham dung de lay thong tin chi tiet ve cong ty dua vao symbol nhan vao
+  //Luu y: ham se chi tra ve thong tin chi tiet cua cong ty khi nhan vao symbol chinh xac
+  //Map<String,dynamic> duoc tra ve co dang
+  //{
+  //      "symbol": symbol,
+  //      "companyName": companyName,
+  //      "exchange": exchange,
+  //      "industry": industry,
+  //      "website": website,
+  //      "description": description,
+  //      "CEO": ceo,
+  //      "issueType": issueType,
+  //      "sector": sector,
+  //      "tag1": tags.length>1?tags[0]:null,
+  //      "tag2" : tags.length>2?tags[1]:null,
+  //      "tag3": tags.length>3?tags[2]:null
+  // };
+  Future<Map<String,dynamic>> getCompanyInfo(String symbol) async {
     final db = await database;
     String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/company";
     var checkDb =
@@ -216,6 +305,15 @@ class DbProvider {
     }
   }
 
+  //Ham tra ve thong tin chung khoan cua cong ty trong 1 thang
+  //Luu y: Ham chi nhan vao chinh xac symbol
+  //{
+  //    "open": open,
+  //    "high": high,
+  //    "low": low,
+  //    "close": close,
+  //    "volume": volume,
+  //  };
   Future<List<Map<String,dynamic>>> getChartInfo_1m(String symbol) async {
     var db = await database;
     List<Map<String, dynamic>> checkSymbol = await db.query(
@@ -238,6 +336,16 @@ class DbProvider {
     return chartMap.isNotEmpty ? chartMap : [];
   }
 
+  //Ham tra ve thong tin chung khoan cua cong ty trong 1 ngay
+  //Luu y: Ham chi nhan vao chinh xac symbol
+  //Map<String,dynamic> duoc tra ve theo dang
+  //{
+  //    "high": high,
+  //    "low": low,
+  //    "volume": volume,
+  //    "open": open,
+  //    "close": close,
+  //  };
   Future<List<Map<String,dynamic>>> getChartInfo_1d(String symbol) async {
     var db = await database;
     List<Map<String, dynamic>> checkSymbol = await db.query(
@@ -260,6 +368,16 @@ class DbProvider {
     return chartMap.isNotEmpty ? chartMap : [];
   }
 
+  //Ham tra ve thong tin chung khoan cua cong ty trong 3 ngay
+  //Luu y: Ham chi nhan vao chinh xac symbol
+  //Map<String,dynamic> duoc tra ve theo dang:
+  //{
+  //    "high": high,
+  //    "low": low,
+  //    "volume": volume,
+  //    "open": open,
+  //    "close": close,
+  // };
   Future<List<Map<String,dynamic>>> getChartInfo_3d(String symbol) async {
     var db = await database;
     List<Map<String, dynamic>> checkSymbol = await db.query(
@@ -303,6 +421,18 @@ class DbProvider {
     return chartMap.isNotEmpty ? chartMap : [];
   }
 
+  //Ham tra ve thong tin chung khoan cua cong ty theo thoi gian hien tai
+  //Luu y: Ham chi nhan vao chinh xac symbol
+  //Ham se tra ve Map<String,dynamic> theo dang:
+  // {
+  //    "symbol":symbol,
+  //    "open": open,
+  //    "close": close,
+  //    "high": high,
+  //    "low": low,
+  //    "marketCap": marketCap,
+  //    "peRatio": peRatio,
+  //  };
   Future<Map<String,dynamic>> getRealTimeInfo(String symbol) async{
     var db=await database;
     List<Map<String, dynamic>> checkSymbol = await db.query(
