@@ -592,7 +592,17 @@ class DbProvider {
   }
 
   //Ham tra ve top 10 symbols hoat dong manh nhat
-
+  //Map tra ve:{
+  //    "symbol": symbol,
+  //    "open": open,
+  //    "close": close,
+  //    "high": high,
+  //    "low": low,
+  //    "change": change,
+  //    "changePercent": changePercent,
+  //    "marketCap": marketCap,
+  //    "peRatio": peRatio,
+  //  };
   Future<List<Map<String,dynamic>>> getTopSymbols() async{
     var db=await database;
     await db.execute("CREATE TABLE IF NOT EXISTS Top_Symbols ("
