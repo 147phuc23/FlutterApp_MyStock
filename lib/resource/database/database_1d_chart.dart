@@ -16,20 +16,10 @@ class DbChart1D {
   double low;
   double average;
   int volume;
-  double notional;
-  int numberOfTrades;
-  double marketHigh;
-  double marketLow;
-  double marketAverage;
-  int marketVolume;
-  double marketNotional;
-  int marketNumberOfTrades;
   double open;
   double close;
-  double marketOpen;
-  double marketClose;
   double changeOverTime;
-  double marketChangeOverTime;
+
 
   DbChart1D({
     this.date,
@@ -39,20 +29,9 @@ class DbChart1D {
     this.low,
     this.average,
     this.volume,
-    this.notional,
-    this.numberOfTrades,
-    this.marketHigh,
-    this.marketLow,
-    this.marketAverage,
-    this.marketVolume,
-    this.marketNotional,
-    this.marketNumberOfTrades,
     this.open,
     this.close,
-    this.marketOpen,
-    this.marketClose,
     this.changeOverTime,
-    this.marketChangeOverTime,
   });
 
   factory DbChart1D.fromJson(Map<String, dynamic> json) => new DbChart1D(
@@ -63,20 +42,9 @@ class DbChart1D {
     low: json["low"].toDouble(),
     average: json["average"].toDouble(),
     volume: json["volume"],
-    notional: json["notional"].toDouble(),
-    numberOfTrades: json["numberOfTrades"],
-    marketHigh: json["marketHigh"].toDouble(),
-    marketLow: json["marketLow"].toDouble(),
-    marketAverage: json["marketAverage"].toDouble(),
-    marketVolume: json["marketVolume"],
-    marketNotional: json["marketNotional"].toDouble(),
-    marketNumberOfTrades: json["marketNumberOfTrades"],
     open: json["open"].toDouble(),
     close: json["close"].toDouble(),
-    marketOpen: json["marketOpen"].toDouble(),
-    marketClose: json["marketClose"].toDouble(),
     changeOverTime: json["changeOverTime"].toDouble(),
-    marketChangeOverTime: json["marketChangeOverTime"].toDouble(),
   );
   factory DbChart1D.fromMap(Map<String, dynamic> json) => new DbChart1D(
     date: json["date"],
@@ -86,20 +54,10 @@ class DbChart1D {
     low: json["low"].toDouble(),
     average: json["average"].toDouble(),
     volume: json["volume"],
-    notional: json["notional"].toDouble(),
-    numberOfTrades: json["numberOfTrades"],
-    marketHigh: json["marketHigh"].toDouble(),
-    marketLow: json["marketLow"].toDouble(),
-    marketAverage: json["marketAverage"].toDouble(),
-    marketVolume: json["marketVolume"],
-    marketNotional: json["marketNotional"].toDouble(),
-    marketNumberOfTrades: json["marketNumberOfTrades"],
     open: json["open"].toDouble(),
     close: json["close"].toDouble(),
-    marketOpen: json["marketOpen"].toDouble(),
-    marketClose: json["marketClose"].toDouble(),
     changeOverTime: json["changeOverTime"].toDouble(),
-    marketChangeOverTime: json["marketChangeOverTime"].toDouble(),
+
   );
   Map<String, dynamic> toJson() => {
     "date": date,
@@ -109,20 +67,9 @@ class DbChart1D {
     "low": low,
     "average": average,
     "volume": volume,
-    "notional": notional,
-    "numberOfTrades": numberOfTrades,
-    "marketHigh": marketHigh,
-    "marketLow": marketLow,
-    "marketAverage": marketAverage,
-    "marketVolume": marketVolume,
-    "marketNotional": marketNotional,
-    "marketNumberOfTrades": marketNumberOfTrades,
     "open": open,
     "close": close,
-    "marketOpen": marketOpen,
-    "marketClose": marketClose,
     "changeOverTime": changeOverTime,
-    "marketChangeOverTime": marketChangeOverTime,
   };
   Map<String, dynamic> toMap() => {
     "date": date,
@@ -132,20 +79,9 @@ class DbChart1D {
     "low": low,
     "average": average,
     "volume": volume,
-    "notional": notional,
-    "numberOfTrades": numberOfTrades,
-    "marketHigh": marketHigh,
-    "marketLow": marketLow,
-    "marketAverage": marketAverage,
-    "marketVolume": marketVolume,
-    "marketNotional": marketNotional,
-    "marketNumberOfTrades": marketNumberOfTrades,
     "open": open,
     "close": close,
-    "marketOpen": marketOpen,
-    "marketClose": marketClose,
     "changeOverTime": changeOverTime,
-    "marketChangeOverTime": marketChangeOverTime,
   };
   Map<String, dynamic> toMapRequired() => {
     "high": high,

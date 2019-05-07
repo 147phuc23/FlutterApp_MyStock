@@ -43,7 +43,7 @@ class DbSymbol {
         symbol: data["symbol"],
         name: data["name"],
         date: DateTime.parse(data["date"]),
-        isEnabled: data["isEnabled"].toString().toLowerCase()=="true",
+        isEnabled: data["isEnabled"].toString().toLowerCase()=="1",
         type: typeValues.map[data["type"]],
         iexId: data["iexId"].toString(),
       );
