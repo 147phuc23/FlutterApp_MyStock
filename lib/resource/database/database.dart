@@ -106,7 +106,9 @@ class DbProvider {
           "tag2 TEXT,"
           "tag3 TEXT"
           ")");
+      await db.execute("CREATE TABLE IF NOT EXISTS  FavoriteList(symbol TEXT)");
     });
+
   }
 
   //Ham du phong, dung de cap nhat lai cho table StockExchange
@@ -640,4 +642,53 @@ class DbProvider {
       }
     }
   }
+
+  //Ham dung de them vao favorite list
+  //Ham se tra ve true neu them vao thanh cong hoac symbol da co trong list
+  //Tra ve false neu symbol khong duoc ho tro hoac khong co trong list symbol lay tu API
+  Future<bool> addToFavoriteList(String symbol) async{
+    var db=await database;
+    var checkSupported=await db.query("Symbol",where: "symbol=?",whereArgs: [symbol]);
+    if(checkSupported.isEmpty){
+      return false;
+    }else{
+      if(checkSupported.first["isEnabled"]=="0"){
+        return false;
+      }
+    }
+    var checkDb=await db.query("FavoriteList",where:"symbol=?",whereArgs: [symbol]);
+    if(checkDb.isNotEmpty){
+      return true;
+    }else{
+      await db.insert("FavoriteList", {"symbol":symbol});
+      return true;
+    }
+  }
+
+  //Ham dung de xoa 1 symbol ra khoi FavoriteList
+  //Ham se tra ve true neu xoa thanh cong
+  Future<bool> deleteFromFavoriteList(String symbol)async{
+    var db=await database;
+    await db.delete("FavoriteList",where: "symbol=?",whereArgs: [symbol]);
+    return true;
+  }
+
+  //Ham dung de lay tat ca cac symbnol dang co trong Favorite List
+  //Ham se tra ve List<String> cac symbol hoac tr ve null neo ko co symbol nao
+  Future<List<String>> getSymbolFromFavoriteList()async{
+    var db=await database;
+    var data=await db.query("FavoriteList");
+    if(data.isEmpty){
+      return null;
+    }else{
+      List<String> returnData=[];
+      for(var f in data){
+        returnData.add(f["symbol"]);
+      }
+      return returnData;
+    }
+  }
+  //End DbProvider Class
 }
+
+
