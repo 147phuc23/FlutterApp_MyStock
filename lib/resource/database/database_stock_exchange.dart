@@ -3,19 +3,15 @@
 //     final dbStockExchange = dbStockExchangeFromJson(jsonString);
 
 import 'dart:convert';
+import './database_interface_data_tranform.dart';
 
 List<DbStockExchange> dbStockExchangeFromJson(String str) {
   final jsonData = json.decode(str);
   return new List<DbStockExchange>.from(
-      jsonData.map((x) => DbStockExchange.fromJson(x)));
+      jsonData.map((x) => DbStockExchange.fromMap(x)));
 }
 
-String dbStockExchangeToJson(List<DbStockExchange> data) {
-  final dyn = new List<dynamic>.from(data.map((x) => x.toJson()));
-  return json.encode(dyn);
-}
-
-class DbStockExchange {
+class DbStockExchange implements DataTranform{
   String mic;
   String tapeId;
   String venueName;
@@ -38,30 +34,7 @@ class DbStockExchange {
     this.lastUpdated,
   });
 
-  factory DbStockExchange.fromJson(Map<String, dynamic> json) =>
-      new DbStockExchange(
-        mic: json["mic"],
-        tapeId: json["tapeId"],
-        venueName: json["venueName"],
-        volume: json["volume"],
-        tapeA: json["tapeA"],
-        tapeB: json["tapeB"],
-        tapeC: json["tapeC"],
-        marketPercent: json["marketPercent"].toDouble(),
-        lastUpdated: json["lastUpdated"],
-      );
 
-  Map<String, dynamic> toJson() => {
-        "mic": mic,
-        "tapeId": tapeId,
-        "venueName": venueName,
-        "volume": volume,
-        "tapeA": tapeA,
-        "tapeB": tapeB,
-        "tapeC": tapeC,
-        "marketPercent": marketPercent,
-        "lastUpdated": lastUpdated,
-      };
   Map<String, dynamic> toMap() {
     return {
       "mic": mic,

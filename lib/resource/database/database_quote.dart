@@ -3,12 +3,11 @@
 //     final dbQuote = dbQuoteFromJson(jsonString);
 
 import 'dart:convert';
+import './database_interface_data_tranform.dart';
 
-DbQuote dbQuoteFromJson(String str) => DbQuote.fromJson(json.decode(str));
+DbQuote dbQuoteFromJson(String str) => DbQuote.fromMap(json.decode(str));
 
-String dbQuoteToJson(DbQuote data) => json.encode(data.toJson());
-
-class DbQuote {
+class DbQuote implements DataTranform{
   String symbol;
   String companyName;
   String primaryExchange;
@@ -60,29 +59,7 @@ class DbQuote {
   });
 
 
-  factory DbQuote.fromJson(Map<String, dynamic> json) => new DbQuote(
-    symbol: json["symbol"],
-    companyName: json["companyName"],
-    primaryExchange: json["primaryExchange"],
-    sector: json["sector"],
-    calculationPrice: json["calculationPrice"],
-    open: json["open"]==null?0.0:json["open"].toDouble(),
-    openTime: json["openTime"]==null?0:json["openTime"].toInt(),
-    close: json["close"]==null?0.0:json["close"].toDouble(),
-    closeTime: json["closeTime"]==null?0:json["closeTime"].toInt(),
-    high: json["high"]==null?0.0:json["high"].toDouble(),
-    low: json["low"]==null?0.0:json["low"].toDouble(),
-    latestPrice: json["latestPrice"]==null?0.0:json["latestPrice"].toDouble(),
-    latestSource: json["latestSource"],
-    latestTime: json["latestTime"],
-    latestUpdate: json["latestUpdate"]==null?0:json["latestUpdate"].toInt(),
-    latestVolume: json["latestVolume"]==null?0:json["latestVolume"].toInt(),
-    previousClose: json["previousClose"]==null?0.0:json["previousClose"].toDouble(),
-    change: json["change"]==null?0.0:json["change"].toDouble(),
-    changePercent: json["changePercent"]==null?0.0:json["changePercent"].toDouble(),
-    marketCap: json["marketCap"]==null?0:json["marketCap"].toInt(),
-    peRatio: json["peRatio"]==null?0.0:json["peRatio"].toDouble(),
-  );
+
   factory DbQuote.fromMap(Map<String, dynamic> json) => new DbQuote(
     symbol: json["symbol"],
     companyName: json["companyName"],
@@ -106,31 +83,7 @@ class DbQuote {
     marketCap: json["marketCap"],
     peRatio: json["peRatio"].toDouble(),
   );
-  Map<String, dynamic> toJson() => {
-    "symbol": symbol,
-    "companyName": companyName,
-    "primaryExchange": primaryExchange,
-    "sector": sector,
-    "calculationPrice": calculationPrice,
-    "open": open,
-    "openTime": openTime,
-    "close": close,
-    "closeTime": closeTime,
-    "high": high,
-    "low": low,
-    "latestPrice": latestPrice,
-    "latestSource": latestSource,
-    "latestTime": latestTime,
-    "latestUpdate": latestUpdate,
-    "latestVolume": latestVolume,
-    "previousClose": previousClose,
-    "change": change,
-    "changePercent": changePercent,
-    "avgTotalVolume": avgTotalVolume,
-    "marketCap": marketCap,
-    "peRatio": peRatio,
-    "ytdChange": ytdChange,
-  };
+
   Map<String, dynamic> toMap() => {
     "symbol": symbol,
     "companyName": companyName,

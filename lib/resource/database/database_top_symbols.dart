@@ -3,13 +3,13 @@
 //     final dbTopSymbols = dbTopSymbolsFromJson(jsonString);
 
 import 'dart:convert';
+import './database_interface_data_tranform.dart';
 
-List<DbTopSymbols> dbTopSymbolsFromJson(String str) => new List<DbTopSymbols>.from(json.decode(str).map((x) => DbTopSymbols.fromJson(x)));
+List<DbTopSymbols> dbTopSymbolsFromJson(String str) => new List<DbTopSymbols>.from(json.decode(str).map((x) => DbTopSymbols.fromMap(x)));
 
-String dbTopSymbolsToJson(List<DbTopSymbols> data) => json.encode(new List<dynamic>.from(data.map((x) => x.toJson())));
-
-class DbTopSymbols {
+class DbTopSymbols implements DataTranform{
   String symbol;
+  String companyName;
   double open;
   double close;
   double high;
@@ -18,10 +18,11 @@ class DbTopSymbols {
   double changePercent;
   int marketCap;
   double peRatio;
-
+  double latestPrice;
 
   DbTopSymbols({
     this.symbol,
+    this.companyName,
     this.open,
     this.close,
     this.high,
@@ -30,10 +31,12 @@ class DbTopSymbols {
     this.changePercent,
     this.marketCap,
     this.peRatio,
+    this.latestPrice
   });
 
-  factory DbTopSymbols.fromJson(Map<String, dynamic> json) => new DbTopSymbols(
+  factory DbTopSymbols.fromMap(Map<String, dynamic> json) => new DbTopSymbols(
     symbol: json["symbol"],
+    companyName:json["companyName"],
     open: json["open"].toDouble(),
     close: json["close"].toDouble(),
     high: json["high"].toDouble(),
@@ -42,21 +45,12 @@ class DbTopSymbols {
     changePercent: json["changePercent"].toDouble(),
     marketCap: json["marketCap"],
     peRatio: json["peRatio"].toDouble(),
+    latestPrice: json["latestPrice"].toDouble()
   );
 
-  Map<String, dynamic> toJson() => {
-    "symbol": symbol,
-    "open": open,
-    "close": close,
-    "high": high,
-    "low": low,
-    "change": change,
-    "changePercent": changePercent,
-    "marketCap": marketCap,
-    "peRatio": peRatio,
-  };
   Map<String, dynamic> toMap() => {
     "symbol": symbol,
+    "companyName":companyName,
     "open": open,
     "close": close,
     "high": high,
@@ -65,6 +59,7 @@ class DbTopSymbols {
     "changePercent": changePercent,
     "marketCap": marketCap,
     "peRatio": peRatio,
+    "latestPrice":latestPrice
   };
 }
 

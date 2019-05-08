@@ -3,12 +3,10 @@
 //     final dbChart1D = dbChart1DFromJson(jsonString);
 
 import 'dart:convert';
-
+import './database_interface_data_tranform.dart';
 List<DbChart1D> dbChart1DFromJson(String str) => new List<DbChart1D>.from(json.decode(str).map((x) => DbChart1D.fromJson(x)));
 
-String dbChart1DToJson(List<DbChart1D> data) => json.encode(new List<dynamic>.from(data.map((x) => x.toJson())));
-
-class DbChart1D {
+class DbChart1D implements DataTranform{
   String date;
   String minute;
   String label;
@@ -59,18 +57,7 @@ class DbChart1D {
     changeOverTime: json["changeOverTime"].toDouble(),
 
   );
-  Map<String, dynamic> toJson() => {
-    "date": date,
-    "minute": minute,
-    "label": label,
-    "high": high,
-    "low": low,
-    "average": average,
-    "volume": volume,
-    "open": open,
-    "close": close,
-    "changeOverTime": changeOverTime,
-  };
+
   Map<String, dynamic> toMap() => {
     "date": date,
     "minute": minute,
@@ -83,6 +70,7 @@ class DbChart1D {
     "close": close,
     "changeOverTime": changeOverTime,
   };
+
   Map<String, dynamic> toMapRequired() => {
     "high": high,
     "low": low,

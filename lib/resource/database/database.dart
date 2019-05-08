@@ -1,8 +1,7 @@
 //Import library
 import 'dart:async';
 
-import 'package:database_test/database_quote.dart';
-import 'package:database_test/database_top_symbols.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';
@@ -12,7 +11,7 @@ import 'package:intl/intl.dart';
 
 //Library written
 import './database_stock_exchange.dart';
-import './database_company_infor.dart';
+import './database_company_info.dart';
 import './database_symbol.dart';
 import './database_1m_chart.dart';
 import './database_1d_chart.dart';
@@ -609,9 +608,11 @@ class DbProvider {
     var db=await database;
     await db.execute("CREATE TABLE IF NOT EXISTS Top_Symbols ("
         "symbol TEXT,"
+        "companyName TEXT,"
         "open NUMBER,"
         "close NUMBER,"
         "high NUMBER,"
+        "latestPrice NUMBER,"
         "low NUMBER,"
         "change NUMBER,"
         "changePercent NUMBER,"
@@ -622,6 +623,7 @@ class DbProvider {
     String urlJson="https://api.iextrading.com/1.0/stock/market/list/mostactive";
     try{
       http.Response response=await http.get(urlJson);
+      print("Get Top symbols worked");
       List<DbTopSymbols> topSymbol=dbTopSymbolsFromJson(response.body);
       List<Map<String,dynamic>> returnMap=[];
       await db.delete("Top_Symbols");
@@ -637,6 +639,7 @@ class DbProvider {
       if(checkDate.isEmpty){
         return null;
       }else{
+        print("Get top symbol workded");
         var data=await db.query("Top_Symbols",where: "symbol NOT LIKE 'haveData'");
         return data;
       }
