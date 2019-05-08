@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:newproject/demodata.dart';
-import 'package:newproject/settingscreen.dart';
 import 'package:newproject/stockwidget.dart';
+import 'package:newproject/main.dart';
 
-class MyHomePage extends StatefulWidget {
+class MyHomeScreen extends StatefulWidget {
   @override
-  MyHomePage({Key key}) : super(key: key);
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomeScreen({Key key}) : super(key: key);
+  _MyHomeScreenState createState() => _MyHomeScreenState();
 }
 
  
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomeScreenState extends State<MyHomeScreen> {
+  bool _isSearch = false;
   @override
   //bool darkThemeEnable = false;
   //List<StockWidget> stocklist;
+  
   Widget build(BuildContext context) {
     return Scaffold(            
       appBar: AppBar(        
@@ -40,8 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   FlatButton(
                     child: Icon(Icons.menu),
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => SettingScreen()));
+                      Navigator.pushNamed(context, '/setting');
                     }, //Navigator(),
                   ),
                   FlatButton(child: Icon(Icons.search), onPressed: () {},)
@@ -51,16 +52,20 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           color: Colors.blue,
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: isDarkTheme? darkTheme.primaryColor: lightTheme.primaryColor,
       ),
       body: Container(
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          children: data.map((f) {
-            return StockWidget(f);
-          }).toList(),
-        ),
+        child: buildListView(),
       ),
     );
+  }
+
+  ListView buildListView() {
+    return ListView(
+        scrollDirection: Axis.vertical,
+        children: data.map((f) {
+          return StockWidget(f);
+        }).toList(),
+      );
   }
 }
