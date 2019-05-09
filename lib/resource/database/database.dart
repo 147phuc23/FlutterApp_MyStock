@@ -364,13 +364,14 @@ class DbProvider {
     try{
       http.Response response = await http.get(urlJson);
       print("Data downloaded");
-      await db.delete("${symbol.toUpperCase()}_chart_1d");
+      await db.delete("${symbol.toUpperCase()}_chart_1m");
       List<DbChart1M> chart = dbChart1MFromJson(response.body);
-
-      List<Map<String, dynamic>> chartMap= new List<Map<String,dynamic>>();
+      List<Map<String, dynamic>> chartMap= [];
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null) {
+          print("Data is not null");
           chartMap.add(chart[i].toMapRequired());
+          print(chartMap[i]);
           await db.insert("${symbol.toUpperCase()}_chart_1m", chart[i].toMapRequired());
         }
       }
