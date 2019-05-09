@@ -315,7 +315,7 @@ class DbProvider {
         if (jsonResponse.body.toLowerCase() == "unknown symbol") {
           return null;
         }
-        DbCompanyInfor info = dbCompanyInforFromJson(jsonResponse.body);
+        DbCompanyInfo info = dbCompanyInforFromJson(jsonResponse.body);
         db.insert("CompanyInfo", info.toMapDatabase());
         return info.toMapDatabase();
       }
@@ -593,44 +593,57 @@ class DbProvider {
   }
 
   //Ham tra ve top 10 symbols hoat dong manh nhat
-  //Map tra ve:{
+  //Map tra ve:{{
   //    "symbol": symbol,
+  //    "companyName": companyName,
+  //    "primaryExchange": primaryExchange,
+  //    "sector": sector,
   //    "open": open,
   //    "close": close,
   //    "high": high,
   //    "low": low,
+  //    "latestPrice": latestPrice,
+  //    "previousClose": previousClose,
   //    "change": change,
   //    "changePercent": changePercent,
   //    "marketCap": marketCap,
-  //    "peRatio": peRatio,
+  //    "peRatio": peRatio == null ? null : peRatio,
   //  };
   Future<List<Map<String,dynamic>>> getTopSymbols() async{
     var db=await database;
     await db.execute("CREATE TABLE IF NOT EXISTS Top_Symbols ("
         "symbol TEXT,"
         "companyName TEXT,"
+        "sector TEXT,"
+        "primaryExchange TEXT,"
         "open NUMBER,"
         "close NUMBER,"
         "high NUMBER,"
-        "latestPrice NUMBER,"
         "low NUMBER,"
+        "latestPrice NUMBER,"
+        "previousClose NUMBER,"
         "change NUMBER,"
         "changePercent NUMBER,"
         "marketCap NUMBER,"
         "peRatio NUMBER"
         ")");
     var checkDate= await db.query("Top_Symbols",where: "symbol =?",whereArgs: ["haveData"]);
-    String urlJson="https://api.iextrading.com/1.0/stock/market/list/mostactive";
+    String urlJson="https://api.iextrading.com/1.0/stock/market/list/gainers";
     try{
       http.Response response=await http.get(urlJson);
       print("Get Top symbols worked");
       List<DbTopSymbols> topSymbol=dbTopSymbolsFromJson(response.body);
+      print(response.body);
+      for(var f in topSymbol){
+        print(f.toMap());
+      }
       List<Map<String,dynamic>> returnMap=[];
       await db.delete("Top_Symbols");
       await db.insert("Top_Symbols", {"symbol":"haveData"});
       for(var f in topSymbol){
         if(f!=null) {
           await db.insert("Top_Symbols", f.toMap());
+          print(f.toMap());
           returnMap.add(f.toMap());
         }
       }

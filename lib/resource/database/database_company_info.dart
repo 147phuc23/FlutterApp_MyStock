@@ -4,11 +4,11 @@
 
 import 'dart:convert';
 
-import 'package:newproject/resource/database/database_interface_data_tranform.dart';
+import './database_interface_data_tranform.dart';
 
-DbCompanyInfor dbCompanyInforFromJson(String str) =>DbCompanyInfor.fromMap(json.decode(str));
+DbCompanyInfo dbCompanyInforFromJson(String str) =>DbCompanyInfo.fromMap(json.decode(str));
 
-class DbCompanyInfor implements DataTranform{
+class DbCompanyInfo implements DataTranform{
   String symbol;
   String companyName;
   String exchange;
@@ -20,7 +20,7 @@ class DbCompanyInfor implements DataTranform{
   String sector;
   List<String> tags;
 
-  DbCompanyInfor({
+  DbCompanyInfo({
     this.symbol,
     this.companyName,
     this.exchange,
@@ -33,8 +33,8 @@ class DbCompanyInfor implements DataTranform{
     this.tags,
   });
 
-  factory DbCompanyInfor.fromMap(Map<String, dynamic> data) =>
-      new DbCompanyInfor(
+  factory DbCompanyInfo.fromMap(Map<String, dynamic> data) =>
+      new DbCompanyInfo(
         symbol: data["symbol"],
         companyName: data["companyName"],
         exchange: data["exchange"],
@@ -46,12 +46,12 @@ class DbCompanyInfor implements DataTranform{
         sector: data["sector"],
         tags: new List<String>.from(data["tags"].map((x) => x)),
       );
-  factory DbCompanyInfor.fromMapDatabase(Map<String, dynamic> data) {
+  factory DbCompanyInfo.fromMapDatabase(Map<String, dynamic> data) {
     List<String> temp;
     if(data['tag1']!='') temp.add(data['tag1']);
     if(data['tag2']!='') temp.add(data['tag2']);
     if(data['tag3']!='') temp.add(data['tag3']);
-    return new DbCompanyInfor(
+    return new DbCompanyInfo(
       symbol: data["symbol"],
       companyName: data["companyName"],
       exchange: data["exchange"],
