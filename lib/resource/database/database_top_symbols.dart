@@ -22,6 +22,7 @@ class DbTopSymbols {
   double change;
   double changePercent;
   int marketCap;
+  String latestSource;
   double peRatio;
 
   DbTopSymbols({
@@ -38,6 +39,7 @@ class DbTopSymbols {
     this.change,
     this.changePercent,
     this.marketCap,
+    this.latestSource,
     this.peRatio,
   });
 
@@ -54,6 +56,7 @@ class DbTopSymbols {
     previousClose: json["previousClose"].toDouble(),
     change: json["change"].toDouble(),
     changePercent: json["changePercent"].toDouble(),
+    latestSource:json["latestSource"],
     marketCap: json["marketCap"],
     peRatio: json["peRatio"] == null ? null : json["peRatio"].toDouble(),
   );
@@ -72,6 +75,7 @@ class DbTopSymbols {
     "change": change,
     "changePercent": changePercent,
     "marketCap": marketCap,
+    "latestSource":latestSource,
     "peRatio": peRatio == null ? null : peRatio,
   };
 }

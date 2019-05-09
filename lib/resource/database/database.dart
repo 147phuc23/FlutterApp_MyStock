@@ -625,6 +625,7 @@ class DbProvider {
         "change NUMBER,"
         "changePercent NUMBER,"
         "marketCap NUMBER,"
+        "latestSource TEXT,"
         "peRatio NUMBER"
         ")");
     var checkDate= await db.query("Top_Symbols",where: "symbol =?",whereArgs: ["haveData"]);
@@ -633,17 +634,12 @@ class DbProvider {
       http.Response response=await http.get(urlJson);
       print("Get Top symbols worked");
       List<DbTopSymbols> topSymbol=dbTopSymbolsFromJson(response.body);
-      print(response.body);
-      for(var f in topSymbol){
-        print(f.toMap());
-      }
       List<Map<String,dynamic>> returnMap=[];
       await db.delete("Top_Symbols");
       await db.insert("Top_Symbols", {"symbol":"haveData"});
       for(var f in topSymbol){
         if(f!=null) {
           await db.insert("Top_Symbols", f.toMap());
-          print(f.toMap());
           returnMap.add(f.toMap());
         }
       }
