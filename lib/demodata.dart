@@ -1,7 +1,7 @@
 import 'package:newproject/stockwidget.dart';
 import 'package:newproject/resource/database/database.dart';
 
-List FavoriteData = [
+List favoriteData = [
   {
     "symbol": "APM",
     "companyName": "Aptorum Group Limited",
@@ -423,7 +423,5 @@ List FavoriteData = [
     "ytdChange": 0.40436340611353716
   }
 ];
-List data ; 
-Map<dynamic, dynamic> listItem = {
-  "symbol": "APPL",
-};
+List dataShow; 
+

@@ -10,7 +10,7 @@ String password = "123456";
 bool isLogedIn = false;
 
 void main() async{
-  data = await DbProvider.db.getTopSymbols();
+  dataShow = await DbProvider.db.getTopSymbols();
   runApp(MyApp());
 }
 

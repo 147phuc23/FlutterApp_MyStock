@@ -21,13 +21,17 @@ class AuthBloc {
     return true;
   }
 
+
   void dispose() {
     _userController.close();
     _passController.close();
   }
 }
 
-
+class SearchBloc {
+  StreamController _searchStreamController = new StreamController();
+  Stream get searchStream => _searchStreamController.stream;
+}
 
 class Validation {
   static bool isValidUserName(String usrname) =>true;// usrname.contains('@') && usrname.length > 6;

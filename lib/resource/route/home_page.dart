@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:newproject/demodata.dart';
+import 'package:newproject/resource/bloc/bloc.dart';
 import 'package:newproject/resource/database/database.dart';
+import 'package:newproject/search.dart';
 import 'package:newproject/stockwidget.dart';
 import 'package:newproject/main.dart';
 
@@ -11,41 +13,65 @@ class MyHomeScreen extends StatefulWidget {
 }
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
-  bool _isSearch = false;
+  bool _isSearching = false;
+  SearchBloc bloc = new SearchBloc();
+  TextEditingController _textController = new TextEditingController();
   @override
   //bool darkThemeEnable = false;
   //List<StockWidget> stocklist;
-
+  
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: FlatButton(
-          child: Icon(Icons.menu),
-          onPressed: () {
-            Navigator.pushNamed(context, '/setting');
-          }, //Navigator(),
-        ),
-        centerTitle: true,
-        title: Title(
-          color: Theme.of(context).primaryColor,
-          child: Text(
-            "Main App",
-            style: TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 20,
-              color: Colors.blueGrey,
+      appBar: _isSearching
+          ? AppBar(
+              title: Title(
+                  color: isDarkTheme ? darkTheme.appBarTheme.color : lightTheme.appBarTheme.color,
+                  child: TextField(
+                    controller: _textController,
+                    autocorrect: false,
+                    keyboardType: TextInputType.text,
+                    style: Theme.of(context).textTheme.subhead,
+                    onChanged: (value) => _handleFilter(value),
+                    autofocus: true,
+                    textCapitalization: TextCapitalization.none,
+                    decoration: new InputDecoration.collapsed(
+                        hintText: 'Search names and symbols...'),
+                  )),
+              backgroundColor: isDarkTheme
+                  ? darkTheme.primaryColor
+                  : lightTheme.primaryColor,
+            )
+          : AppBar(
+              leading: FlatButton(
+                child: Icon(Icons.menu),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/setting');
+                }, //Navigator(),
+              ),
+              centerTitle: true,
+              title: Title(
+                color: Theme.of(context).primaryColor,
+                child: Text(
+                  "Main App",
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 20,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Icon(Icons.search),
+                  onPressed: () {
+                    showSearch(context: context, delegate: CodeSearch(bloc.searchStream));                    
+                  },
+                )
+              ],
+              backgroundColor: isDarkTheme
+                  ? darkTheme.primaryColor
+                  : lightTheme.primaryColor,
             ),
-          ),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: Icon(Icons.search),
-            onPressed: () {},
-          )
-        ],
-        backgroundColor:
-            isDarkTheme ? darkTheme.primaryColor : lightTheme.primaryColor,
-      ),
       body: Container(
         child: buildListView(),
       ),
@@ -56,15 +82,16 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     return RefreshIndicator(
       child: ListView(
         scrollDirection: Axis.vertical,
-        children: data.map((f) {
+        children: dataShow.map((f) {
           return StockWidget(f);
         }).toList(),
       ),
-      onRefresh: (){
-        setState(() async {
-          data = await DbProvider.db.getTopSymbols();
-        });
+      onRefresh: () async {
+        dataShow = await DbProvider.db.getTopSymbols();
+        setState(() {});
       },
     );
   }
+
+  _handleFilter(String value) {}
 }
