@@ -8,7 +8,6 @@ class AuthBloc {
   Stream get passStream => _passController.stream;
 
   bool isValidInfo(String usr, String pwd){
-    return true;
     if (!Validation.isValidUserName(usr)) {
       _userController.sink.addError("Tên đăng nhập không hợp lệ!");
       return false;

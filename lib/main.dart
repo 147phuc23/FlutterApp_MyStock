@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:newproject/demodata.dart';
-import 'package:newproject/home_page.dart';
-import 'package:path/path.dart';
-import 'stockwidget.dart';
-import 'settingscreen.dart';
-import 'resource/login_screen.dart';
+import 'package:newproject/resource/route/home_page.dart';
+import 'package:newproject/resource/route/login_screen.dart';
+import 'package:newproject/resource/route/settingscreen.dart';
 
-void main() => runApp(MyApp());
+String userName = "Đặng Hoàng Phúc";
+bool isLogedIn = false;
+
+void main()  =>runApp(MyApp());
 
 bool isDarkTheme = false;
 final ThemeData lightTheme = new ThemeData(
@@ -61,14 +62,14 @@ class _MyAppState extends State<MyApp> {
         home: LoginScreen(),
         routes: <String, WidgetBuilder>{
           '/login': (context) => LoginScreen(),
-          '/home': (context) => MyHomePage(),
-          '/setting': (context) => SettingScreen(),
+          '/home': (context) => MyHomeScreen(),
+          '/setting': (context) => SettingScreen(toggleTheme),
         });
   }
 }
 
 
-  createMainAppBar(String x) => AppBar(
+  createAppBar(String x) => AppBar(
         textTheme: isDarkTheme ? darkTheme.textTheme : lightTheme.textTheme,
         centerTitle: true,
         title: Title(
@@ -78,11 +79,14 @@ class _MyAppState extends State<MyApp> {
                 Icons.android,
                 size: 20,
               ),
-              Text(
-                "$x",
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 20,
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(
+                  "$x",
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 20,
+                  ),
                 ),
               ),
               Spacer(),

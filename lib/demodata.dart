@@ -17,3 +17,7 @@ List<StockCode> data = [
   StockCode('AMZ', 'Amazon', 12.36),
   StockCode('GGL', 'Alphabet.Inc', 12),
 ];
+
+Map<dynamic,dynamic> listItem = {
+  "symbol" : "APPL",
+};
