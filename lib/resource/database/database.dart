@@ -662,24 +662,41 @@ class DbProvider {
   //  };
   Future<Map<String, dynamic>> getRealTimeInfo(String symbol) async {
     var db = await database;
+    await db.execute("CREATE TABLE IF NOT EXISTS ${symbol.toUpperCase()}_real_time_info ("
+        "symbol TEXT,"
+         "open NUMBER,"
+         "close NUMBER,"
+         "high NUMBER,"
+         "low NUMBER,"
+         "marketCap NUMBER,"
+         "peRatio NUMBER"
+        ")");
+    var checkDate=await db.query("${symbol.toUpperCase()}_real_time_info",where: "symbol LIKE 'haveData'");
     List<Map<String, dynamic>> checkSymbol =
         await db.query("Symbol", where: "symbol=?", whereArgs: [symbol]);
     if (checkSymbol.isEmpty) {
       return null;
     } else {
-      if (checkSymbol.first["isEnabled"].toString().toLowerCase() == "false") {
+      if (checkSymbol.first["isEnabled"].toString().toLowerCase() == "0") {
         return null;
       }
     }
     String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/quote";
     try {
       http.Response response = await http.get(urlJson);
-      print("Status code : ${response.statusCode}");
+      await db.delete("${symbol.toUpperCase()}_real_time_info");
       DbQuote quote = dbQuoteFromJson(response.body);
+      await db.insert("${symbol.toUpperCase()}_real_time_info", quote.toMapRequired());
+      await db.insert("${symbol.toUpperCase()}_real_time_info", {"symbol":"haveData"});
       return quote.toMapRequired();
     } catch (e) {
-      print("Can't not connect to the network.");
-      return null;
+      if(checkDate.isEmpty){
+        print("Not have data available");
+        return null;
+      }
+      var data=await db.query("${symbol.toUpperCase()}_real_time_info");
+      data.removeLast();
+      return data.first;
     }
   }
 
