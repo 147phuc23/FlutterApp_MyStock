@@ -228,7 +228,7 @@ class DbProvider {
     return res.isEmpty ? null : res;
   }
 
-  //Ham dung tra ve tat ca symbols ma API ho tro
+  /// Ham dung tra ve tat ca symbols ma API ho tro
   //Map<String,dynamic> duoc tra ve co dang:
   //{
   //      "symbol": symbol,

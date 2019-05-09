@@ -63,7 +63,7 @@ class StockWidget extends StatelessWidget {
                   Text(code["changePercent"].toString(),
                       style: TextStyle(
                         fontFamily: 'Helvetica',
-                        color: code["changePercent"] > 0
+                        color:true// code["changePercent"] > 0
                             ? Colors.green
                             : Colors.red,
                         fontSize: 12,

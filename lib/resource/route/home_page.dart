@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newproject/demodata.dart';
+import 'package:newproject/resource/database/database.dart';
 import 'package:newproject/stockwidget.dart';
 import 'package:newproject/main.dart';
 
@@ -51,12 +52,19 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     );
   }
 
-  ListView buildListView() {
-    return ListView(
-      scrollDirection: Axis.vertical,
-      children: data.map((f) {
-        return StockWidget(f);
-      }).toList(),
+  buildListView() {
+    return RefreshIndicator(
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        children: data.map((f) {
+          return StockWidget(f);
+        }).toList(),
+      ),
+      onRefresh: (){
+        setState(() async {
+          data = await DbProvider.db.getTopSymbols();
+        });
+      },
     );
   }
 }
