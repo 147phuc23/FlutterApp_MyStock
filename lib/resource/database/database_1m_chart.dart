@@ -71,7 +71,6 @@ class DbChart1M implements DataTranform {
     "low": low,
     "close": close,
     "volume": volume,
-    "unadjustedVolume": unadjustedVolume,
     "change": change,
     "changePercent": changePercent,
     "vwap": vwap,

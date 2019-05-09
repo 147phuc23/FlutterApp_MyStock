@@ -200,7 +200,13 @@ class DbProvider {
       throw "Cannot get data.";
     }
   }
+
+
+
+
+
   //Tu day tro di la cac ham tra data ve
+
 
 
 
@@ -228,7 +234,7 @@ class DbProvider {
     return res.isEmpty ? null : res;
   }
 
-  /// Ham dung tra ve tat ca symbols ma API ho tro
+  //Ham dung tra ve tat ca symbols ma API ho tro
   //Map<String,dynamic> duoc tra ve co dang:
   //{
   //      "symbol": symbol,
@@ -280,6 +286,7 @@ class DbProvider {
     var res = await db.rawQuery("SELECT * FROM Symbol WHERE symbol LIKE '%$symbol%'");
     return res.isNotEmpty?res:null;
   }
+
 
   //Ham dung de lay thong tin chi tiet ve cong ty dua vao symbol nhan vao
   //Luu y: ham se chi tra ve thong tin chi tiet cua cong ty khi nhan vao symbol chinh xac
@@ -333,31 +340,30 @@ class DbProvider {
   //  };
   Future<List<Map<String,dynamic>>> getChartInfo_1m(String symbol) async {
     var db = await database;
-    await db.execute("CREATE TABLE IF NOT EXISTS ${symbol.toUpperCase()}_chart_1d ("
-        "date TEXT,"
-        "minute TEXT,"
-        "label TEXT,"
+    await db.execute("CREATE TABLE IF NOT EXISTS ${symbol.toUpperCase()}_chart_1m ("
+        "open NUMBER,"
         "high NUMBER,"
         "low NUMBER,"
-        "average NUMBER,"
-        "volume NUMBER,"
-        "open NUMBER,"
         "close NUMBER,"
-        "changeOverTime NUMBER"
+        "volume NUMBER,"
+        "label TEXT"
         ")");
     List<Map<String, dynamic>> checkSymbol = await db.query(
         "Symbol", where: "symbol=?", whereArgs: [symbol]);
+    print(checkSymbol.first);
     if (checkSymbol.isEmpty) {
       return null;
     } else{
-      if(DbSymbol.fromMap(checkSymbol.first).isEnabled==false){
-        return null;
-      }
-    }
+  if(checkSymbol.first["isEnabled"]=="0"){
+    print("Symbol is not supported");
+    return null;
+  }
+  }
     var checkDate= await db.query("${symbol.toUpperCase()}_chart_1m",where: "label =?",whereArgs: ["haveData"]);
     String urlJson = "https://api.iextrading.com/1.0/stock/${symbol}/chart/1m";
     try{
       http.Response response = await http.get(urlJson);
+      print("Data downloaded");
       await db.delete("${symbol.toUpperCase()}_chart_1d");
       List<DbChart1M> chart = dbChart1MFromJson(response.body);
 
@@ -365,11 +371,12 @@ class DbProvider {
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null) {
           chartMap.add(chart[i].toMapRequired());
-          await db.insert("${symbol.toUpperCase()}_chart_1m", chart[i].toMap());
+          await db.insert("${symbol.toUpperCase()}_chart_1m", chart[i].toMapRequired());
         }
       }
       return chartMap.isNotEmpty ? chartMap : [];
     }catch(e){
+      print("Error occured");
       return null;
     }
   }
@@ -387,16 +394,11 @@ class DbProvider {
   Future<List<Map<String,dynamic>>> getChartInfo_1d(String symbol) async {
     var db = await database;
     await db.execute("CREATE TABLE IF NOT EXISTS ${symbol.toUpperCase()}_chart_1d ("
-        "date TEXT,"
-        "minute TEXT,"
-        "label TEXT,"
+        "open NUMBER,"
         "high NUMBER,"
         "low NUMBER,"
-        "average NUMBER,"
-        "volume NUMBER,"
-        "open NUMBER,"
         "close NUMBER,"
-        "changeOverTime NUMBER"
+        "volume NUMBER"
         ")");
     List<Map<String, dynamic>> checkSymbol = await db.query(
         "Symbol", where: "symbol=?", whereArgs: [symbol]);
@@ -461,16 +463,11 @@ class DbProvider {
   Future<List<Map<String,dynamic>>> getChartInfo_3d(String symbol) async {
     var db = await database;
     await db.execute("CREATE TABLE IF NOT EXISTS ${symbol.toUpperCase()}_chart_3d ("
-        "date TEXT,"
-        "minute TEXT,"
-        "label TEXT,"
+        "open NUMBER,"
         "high NUMBER,"
         "low NUMBER,"
-        "average NUMBER,"
-        "volume NUMBER,"
-        "open NUMBER,"
         "close NUMBER,"
-        "changeOverTime NUMBER"
+        "volume NUMBER"
         ")");
     var checkDate= await db.query("${symbol.toUpperCase()}_chart_3d",where: "label =?",whereArgs: ["haveData"]);
     List<Map<String, dynamic>> checkSymbol = await db.query(
@@ -498,7 +495,7 @@ class DbProvider {
       List<Map<String, dynamic>> chartMap=new List<Map<String,dynamic>>() ;
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null)
-          chartMap.add(chart[i].toMap());
+          chartMap.add(chart[i].toMapRequired());
       }
       time=DateTime.now();
       time=time.subtract(new Duration(days:1));
@@ -508,14 +505,14 @@ class DbProvider {
       chart = dbChart1DFromJson(response.body);
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null)
-          chartMap.add(chart[i].toMap());
+          chartMap.add(chart[i].toMapRequired());
       }
       urlJson = "https://api.iextrading.com/1.0/stock/$symbol/chart/1d?chartInterval=10";
       response = await http.get(urlJson);
       chart = dbChart1DFromJson(response.body);
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null)
-          chartMap.add(chart[i].toMap());
+          chartMap.add(chart[i].toMapRequired());
       }
 
       //Add data to database
@@ -523,7 +520,7 @@ class DbProvider {
       await db.delete("${symbol.toUpperCase()}_chart_3d");
       for (int i = 0; i < chartMap.length; i++) {
         if(chartMap[i]!=null) {
-          returnChart.add(DbChart1M.fromMap(chartMap[i]).toMapRequired());
+          returnChart.add(chartMap[i]);
           await db.insert("${symbol.toUpperCase()}_chart_3d", chartMap[i]);
         }
       }
