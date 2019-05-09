@@ -369,7 +369,6 @@ class DbProvider {
       List<Map<String, dynamic>> chartMap= [];
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null) {
-          print("Data is not null");
           chartMap.add(chart[i].toMapRequired());
           print(chartMap[i]);
           await db.insert("${symbol.toUpperCase()}_chart_1m", chart[i].toMapRequired());
@@ -395,6 +394,7 @@ class DbProvider {
   Future<List<Map<String,dynamic>>> getChartInfo_1d(String symbol) async {
     var db = await database;
     await db.execute("CREATE TABLE IF NOT EXISTS ${symbol.toUpperCase()}_chart_1d ("
+        "label TEXT,"
         "open NUMBER,"
         "high NUMBER,"
         "low NUMBER,"
@@ -407,30 +407,41 @@ class DbProvider {
       print("Not have symbol");
       return null;
     } else{
-      if(!DbSymbol.fromMap(checkSymbol.first).isEnabled){
-        print(DbSymbol.fromMap(checkSymbol.first).isEnabled);
+      if(checkSymbol.first["isEnabled"]=="0"){
+        print(checkSymbol.first["isEnabled"]);
         print("Symbol is not supported");
         return null;
       }
     }
     var checkDate= await db.query("${symbol.toUpperCase()}_chart_1d",where: "label =?",whereArgs: ["haveData"]);
     String urlJson = "https://api.iextrading.com/1.0/stock/${symbol}/chart/1d?chartInterval=10";
-    try{
+
       http.Response response = await http.get(urlJson);
+      print("Download data completed");
       await db.delete("${symbol.toUpperCase()}_chart_1d");
+      print("Delete table complete");
       List<DbChart1D> chart = dbChart1DFromJson(response.body);
-      List<Map<String, dynamic>> chartMap=new List<Map<String,dynamic>>() ;
+      chart.removeWhere((item){
+        if(item.low==-1||item.high==-1||item.volume==0||item.open==null||item.close==null)
+          return true;
+        else return false;
+      });
+      print("Transform comple");
+      print(response.body);
+      List<Map<String, dynamic>> chartMap=[];
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null) {
           chartMap.add(chart[i].toMapRequired());
-          await db.insert("${symbol.toUpperCase()}_chart_1d", chart[i].toMap());
+          print(chart[i].toMapRequired());
+          await db.insert("${symbol.toUpperCase()}_chart_1d", chart[i].toMapRequired());
         }
       }
         await db.insert("${symbol.toUpperCase()}_chart_1d", {
         "label":"haveData"
         });
       return chartMap.isNotEmpty ? chartMap : [];
-    }catch(e){
+    /*}catch(e){
+      print("Error occured");
       if(checkDate.isEmpty){
         return null;
       }else{
@@ -446,10 +457,9 @@ class DbProvider {
           });
         }
         return chartDataInRequired;
-      }
+      }*/
     }
 
-  }
 
   //Ham tra ve thong tin chung khoan cua cong ty trong 3 ngay
   //Luu y: Ham chi nhan vao chinh xac symbol
@@ -464,6 +474,7 @@ class DbProvider {
   Future<List<Map<String,dynamic>>> getChartInfo_3d(String symbol) async {
     var db = await database;
     await db.execute("CREATE TABLE IF NOT EXISTS ${symbol.toUpperCase()}_chart_3d ("
+        "label TEXT,"
         "open NUMBER,"
         "high NUMBER,"
         "low NUMBER,"
@@ -477,8 +488,8 @@ class DbProvider {
       print("Not have symbol");
       return null;
     } else{
-      if(!DbSymbol.fromMap(checkSymbol.first).isEnabled){
-        print(DbSymbol.fromMap(checkSymbol.first).isEnabled);
+      if(checkSymbol.first["isEnabled"]=="0"){
+        print(checkSymbol.first["isEnabled"]);
         print("Symbol is not supported");
         return null;
       }
@@ -493,6 +504,11 @@ class DbProvider {
       String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/chart/date/$dateFormatter?chartInterval=10";
       http.Response response = await http.get(urlJson);
       List<DbChart1D> chart = dbChart1DFromJson(response.body);
+      chart.removeWhere((item){
+        if(item.high==-1.0||item.low==-1.0||item.volume==0||item.open==null||item.close==null)
+          return true;
+        else return false;
+      });
       List<Map<String, dynamic>> chartMap=new List<Map<String,dynamic>>() ;
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null)
@@ -504,6 +520,11 @@ class DbProvider {
       urlJson = "https://api.iextrading.com/1.0/stock/$symbol/chart/date/$dateFormatter?chartInterval=10";
       response = await http.get(urlJson);
       chart = dbChart1DFromJson(response.body);
+      chart.removeWhere((item){
+        if(item.high==-1.0||item.low==-1.0||item.volume==0||item.open==null||item.close==null)
+          return true;
+        else return false;
+      });
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null)
           chartMap.add(chart[i].toMapRequired());
@@ -511,11 +532,20 @@ class DbProvider {
       urlJson = "https://api.iextrading.com/1.0/stock/$symbol/chart/1d?chartInterval=10";
       response = await http.get(urlJson);
       chart = dbChart1DFromJson(response.body);
+      chart.removeWhere((item){
+        if(item.high==-1.0||item.low==-1.0||item.volume==0||item.open==null||item.close==null)
+          return true;
+        else return false;
+      });
       for (int i = 0; i < chart.length; i++) {
         if(chart[i]!=null)
           chartMap.add(chart[i].toMapRequired());
       }
-
+      chartMap.removeWhere((item){
+        if(item['high']=='-1.0'||item['low']=='-1.0'||item['volume']=='0'||item['open']=='null'||item['close']=='null')
+          return true;
+        else return false;
+      });
       //Add data to database
       List<Map<String,dynamic>> returnChart= [];
       await db.delete("${symbol.toUpperCase()}_chart_3d");
@@ -621,11 +651,14 @@ class DbProvider {
         "peRatio NUMBER"
         ")");
     var checkDate= await db.query("Top_Symbols",where: "symbol =?",whereArgs: ["haveData"]);
-    String urlJson="https://api.iextrading.com/1.0/stock/market/list/gainers";
+    String urlJson="https://api.iextrading.com/1.0/stock/market/list/infocus";
     try{
       http.Response response=await http.get(urlJson);
       print("Get Top symbols worked");
       List<DbTopSymbols> topSymbol=dbTopSymbolsFromJson(response.body);
+      for(int i=0;i<topSymbol.length;i++){
+
+      }
       List<Map<String,dynamic>> returnMap=[];
       await db.delete("Top_Symbols");
       await db.insert("Top_Symbols", {"symbol":"haveData"});
