@@ -82,6 +82,6 @@ class DbChart1M implements DataTranform {
     "high": high,
     "low": low,
     "close": close,
-    "volume": volume,
+    "volumeto": volume,
   };
 }

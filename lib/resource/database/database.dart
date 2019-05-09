@@ -345,7 +345,7 @@ class DbProvider {
         "high NUMBER,"
         "low NUMBER,"
         "close NUMBER,"
-        "volume NUMBER,"
+        "volumeto NUMBER,"
         "label TEXT"
         ")");
     List<Map<String, dynamic>> checkSymbol = await db.query(
@@ -399,7 +399,7 @@ class DbProvider {
         "high NUMBER,"
         "low NUMBER,"
         "close NUMBER,"
-        "volume NUMBER"
+        "volumeto NUMBER"
         ")");
     List<Map<String, dynamic>> checkSymbol = await db.query(
         "Symbol", where: "symbol=?", whereArgs: [symbol]);
@@ -479,7 +479,7 @@ class DbProvider {
         "high NUMBER,"
         "low NUMBER,"
         "close NUMBER,"
-        "volume NUMBER"
+        "volumeto NUMBER"
         ")");
     var checkDate= await db.query("${symbol.toUpperCase()}_chart_3d",where: "label =?",whereArgs: ["haveData"]);
     List<Map<String, dynamic>> checkSymbol = await db.query(
@@ -569,7 +569,7 @@ class DbProvider {
           chartDataInRequired.add({
             "high": f["high"],
             "low": f["low"],
-            "volume": f["volume"],
+            "volumeto": f["volumeto"],
             "open": f["open"],
             "close": f["close"],
           });

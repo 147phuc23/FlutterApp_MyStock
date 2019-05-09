@@ -16,11 +16,12 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
   
   
   @override
-  void x() async{
-    widget.sampleData = await DbProvider.db.getChartInfo_1d(widget.code["symbol"]);
+  Future<int> fetchData()async{
+    widget.sampleData=await DbProvider.db.getChartInfo_1m(widget.code["symbol"]);
+    return 0;
   }
+
   Widget build  (BuildContext context) {
-    x();
     return Scaffold(
         
         appBar: createAppBar('Details'),
@@ -139,18 +140,11 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
                 ),
               ),
               Container(
-                child: OHLCVGraph(
-                  data: widget.sampleData,
-                  enableGridLines: true,
-                  volumeProp: 0.2,
-                  lineWidth: 0.5,
-                  decreaseColor: Colors.orangeAccent,
-                  increaseColor: Colors.purple,
-                  labelPrefix: "",
-                ),
+                child:futureWidget(),
                 height: 340,
                 width: MediaQuery.of(context).size.width,
-              ),
+                ),
+
             ],
           ),
         ),
@@ -171,4 +165,27 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
           ),
         ),
       );
+  Widget futureWidget(){
+    return new FutureBuilder(
+      future: fetchData(),
+      builder: (context,snapshot){
+        if(snapshot.hasData){
+          return OHLCVGraph(
+            data: widget.sampleData,
+            enableGridLines: true,
+            volumeProp: 0.2,
+            lineWidth: 0.5,
+            decreaseColor: Colors.orangeAccent,
+            increaseColor: Colors.purple,
+            labelPrefix: "",
+          );
+        }else
+        if(snapshot.hasError){
+          return new Text("Error");
+        } else return new CircularProgressIndicator();
+      },
+
+    );
+  }
 }
+

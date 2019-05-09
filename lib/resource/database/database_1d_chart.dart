@@ -74,7 +74,7 @@ class DbChart1D implements DataTranform{
   Map<String, dynamic> toMapRequired() => {
     "high": high,
     "low": low,
-    "volume": volume,
+    "volumeto": volume,
     "open": open,
     "close": close,
   };
