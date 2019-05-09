@@ -14,10 +14,9 @@ class InforDetailScreen extends StatefulWidget {
 
 class _InforDetailScreenState extends State<InforDetailScreen> {
   @override
-  Future<int> fetchData() async {
-    widget.sampleData =
-        await DbProvider.db.getChartInfo_1m(widget.code["symbol"]);
-    return 0;
+  Future<double> fetchData()async{
+    widget.sampleData=await DbProvider.db.getChartInfo_1m(widget.code["symbol"]);
+    return widget.sampleData[0]["open"].toDouble();
   }
 
   Widget build(BuildContext context) {
