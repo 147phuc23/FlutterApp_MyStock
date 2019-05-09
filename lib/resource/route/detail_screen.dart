@@ -16,9 +16,9 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
   
   
   @override
-  Future<int> fetchData()async{
+  Future<double> fetchData()async{
     widget.sampleData=await DbProvider.db.getChartInfo_1m(widget.code["symbol"]);
-    return 0;
+    return widget.sampleData[0]["open"].toDouble();
   }
 
   Widget build  (BuildContext context) {
