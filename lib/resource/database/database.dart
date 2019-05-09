@@ -200,13 +200,7 @@ class DbProvider {
       throw "Cannot get data.";
     }
   }
-
-
-
-
-
   //Tu day tro di la cac ham tra data ve
-
 
 
 

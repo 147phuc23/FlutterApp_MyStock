@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newproject/demodata.dart';
+import 'package:newproject/resource/database/database.dart';
 import 'package:newproject/resource/route/home_page.dart';
 import 'package:newproject/resource/route/login_screen.dart';
 import 'package:newproject/resource/route/settingscreen.dart';
@@ -9,6 +10,7 @@ String password = "123456";
 bool isLogedIn = false;
 
 void main() async{
+  data = await DbProvider.db.getTopSymbols();
   runApp(MyApp());
 }
 
