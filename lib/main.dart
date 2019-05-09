@@ -9,7 +9,7 @@ String username = "abcxyzt";
 String password = "123456";
 bool isLogedIn = false;
 
-void main() async{
+void main() async {
   dataShow = await DbProvider.db.getTopSymbols();
   runApp(MyApp());
 }
@@ -76,25 +76,13 @@ createAppBar(String x) => AppBar(
       textTheme: isDarkTheme ? darkTheme.textTheme : lightTheme.textTheme,
       centerTitle: true,
       title: Title(
-        child: Row(
-          children: <Widget>[
-            Icon(
-              Icons.android,
-              size: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Text(
-                "$x",
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            Spacer(),
-          ],
-        ),
         color: isDarkTheme ? Color(0xff190e18) : Color(0xffced9d2),
+        child: Text(
+          "$x",
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 20,
+          ),
+        ),
       ),
     );
