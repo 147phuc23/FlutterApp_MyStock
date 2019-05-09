@@ -9,7 +9,7 @@ class StockCode {
 }
 
 class StockWidget extends StatelessWidget {
-  final StockCode code;
+  Map code;
   @override
   StockWidget(this.code);
   Widget build(BuildContext context) {
@@ -32,13 +32,13 @@ class StockWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(code.name,
+                        Text('${code["symbol"]}',
                             style: TextStyle(
                               fontFamily: 'Helvetica',
                               fontSize: 20,
                             )),
                         Text(
-                          code.fullname,
+                          "${code["companyName"]}",
                           style: TextStyle(
                             fontFamily: 'Roboto',
                             color: Colors.black26,
@@ -55,15 +55,17 @@ class StockWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  Text(code.price.toString(),
+                  Text(code['latestPrice'].toString(),
                       style: TextStyle(
                         fontFamily: 'Helvetica',
                         fontSize: 22,
                       )),
-                  Text(code.price.toString(),
+                  Text(code["changePercent"].toString(),
                       style: TextStyle(
                         fontFamily: 'Helvetica',
-                        color: Colors.red,
+                        color: code["changePercent"] > 0
+                            ? Colors.green
+                            : Colors.red,
                         fontSize: 12,
                       )),
                 ],

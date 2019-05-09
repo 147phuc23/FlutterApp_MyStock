@@ -4,10 +4,13 @@ import 'package:newproject/resource/route/home_page.dart';
 import 'package:newproject/resource/route/login_screen.dart';
 import 'package:newproject/resource/route/settingscreen.dart';
 
-String userName = "Đặng Hoàng Phúc";
+String username = "abcxyzt";
+String password = "123456";
 bool isLogedIn = false;
 
-void main()  =>runApp(MyApp());
+void main() async{
+  runApp(MyApp());
+}
 
 bool isDarkTheme = false;
 final ThemeData lightTheme = new ThemeData(
@@ -44,7 +47,6 @@ final ThemeData darkTheme = new ThemeData(
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
-  
 }
 
 class _MyAppState extends State<MyApp> {
@@ -68,30 +70,29 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-
-  createAppBar(String x) => AppBar(
-        textTheme: isDarkTheme ? darkTheme.textTheme : lightTheme.textTheme,
-        centerTitle: true,
-        title: Title(
-          child: Row(
-            children: <Widget>[
-              Icon(
-                Icons.android,
-                size: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Text(
-                  "$x",
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 20,
-                  ),
+createAppBar(String x) => AppBar(
+      textTheme: isDarkTheme ? darkTheme.textTheme : lightTheme.textTheme,
+      centerTitle: true,
+      title: Title(
+        child: Row(
+          children: <Widget>[
+            Icon(
+              Icons.android,
+              size: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Text(
+                "$x",
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 20,
                 ),
               ),
-              Spacer(),
-            ],
-          ),
-          color: isDarkTheme? Color(0xff190e18) : Color(0xffced9d2),
+            ),
+            Spacer(),
+          ],
         ),
-      );
+        color: isDarkTheme ? Color(0xff190e18) : Color(0xffced9d2),
+      ),
+    );
