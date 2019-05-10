@@ -64,7 +64,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                 FlatButton(
                   child: Icon(Icons.search),
                   onPressed: () {
-                    showSearch(context: context, delegate: CodeSearch(bloc));
+                    showSearch(context: context, delegate: CodeSearch(SearchBloc()));
                   },
                 )
               ],
