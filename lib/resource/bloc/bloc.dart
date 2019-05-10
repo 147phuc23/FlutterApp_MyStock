@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:newproject/resource/database/database.dart';
+import 'package:flutter/material.dart';
 
 import 'package:newproject/resource/database/database.dart';
 
@@ -32,21 +34,18 @@ class AuthBloc {
 }
 
 class SearchBloc {
-  StreamController _searchStreamController = new StreamController.broadcast();
+  StreamController _searchStreamController = StreamController();
   Stream get searchStream => _searchStreamController.stream;
 
-  searchSymbol(String query) {
-    List result = favoriteData.where((p) {
-      return p["symbol"].startsWith(query);
-    }).toList();
-    return result;
+  List<Map<String,dynamic>> listData=[];
+
+  void updateSearch(String query)async{
+    if(query==null) return;
+    listData=await DbProvider.db.searchSymbol(query);
+    _searchStreamController.sink.add(listData);
   }
 
-  void search(query) {
-    _searchStreamController.sink.add(searchSymbol(query));
-  }
-
-  void dispose() {
+  void dispose(){
     _searchStreamController.close();
   }
 }
