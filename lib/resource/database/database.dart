@@ -89,20 +89,6 @@ class DbProvider {
           "type TEXT,"
           "iexId TEXT"
           ")");
-      await db.execute("CREATE TABLE IF NOT EXISTS CompanyInfo ("
-          "symbol TEXT,"
-          "companyName TEXT,"
-          "exchange TEXT,"
-          "industry TEXT,"
-          "website TEXT,"
-          "description TEXT,"
-          "ceo TEXT,"
-          "issueType TEXT,"
-          "sector TEXT,"
-          "tag1 TEXT,"
-          "tag2 TEXT,"
-          "tag3 TEXT"
-          ")");
       await db.execute("CREATE TABLE IF NOT EXISTS  FavoriteList(symbol TEXT)");
     });
   }
@@ -289,6 +275,20 @@ class DbProvider {
   // };
   Future<Map<String, dynamic>> getCompanyInfo(String symbol) async {
     final db = await database;
+    await db.execute("CREATE TABLE IF NOT EXISTS CompanyInfo ("
+        "symbol TEXT,"
+        "companyName TEXT,"
+        "exchange TEXT,"
+        "industry TEXT,"
+        "website TEXT,"
+        "description TEXT,"
+        "ceo TEXT,"
+        "issueType TEXT,"
+        "sector TEXT,"
+        "tag1 TEXT,"
+        "tag2 TEXT,"
+        "tag3 TEXT"
+        ")");
     String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/company";
     var checkDb =
         await db.query("CompanyInfo", where: "symbol=?", whereArgs: [symbol]);

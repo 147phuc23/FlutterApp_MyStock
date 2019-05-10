@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:newproject/resource/database/database.dart';
+import 'package:flutter/material.dart';
 
 class AuthBloc {
   StreamController _userController = new StreamController();
@@ -29,12 +31,47 @@ class AuthBloc {
 }
 
 class SearchBloc {
-  StreamController _searchStreamController = new StreamController();
+  StreamController _searchStreamController = StreamController();
   Stream get searchStream => _searchStreamController.stream;
+
+  List<Map<String,dynamic>> listData=[];
+
+  void updateSearch(String query)async{
+    if(query==null) return;
+    listData=await DbProvider.db.searchSymbol(query);
+    _searchStreamController.sink.add(listData);
+  }
+
+  void dispose(){
+    _searchStreamController.close();
+  }
+
+
+}
+class InheritedBlocs extends InheritedWidget {
+  InheritedBlocs(
+      {Key key,
+        this.searchBloc,
+        this.child})
+      : super(key: key, child: child);
+
+  final Widget child;
+  final SearchBloc searchBloc;
+
+  static InheritedBlocs of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(InheritedBlocs)
+    as InheritedBlocs);
+  }
+
+  @override
+  bool updateShouldNotify(InheritedBlocs oldWidget) {
+    return true;
+  }
 }
 
 class Validation {
   static bool isValidUserName(String usrname) =>true;// usrname.contains('@') && usrname.length > 6;
   static bool isValidPassword(String pwd) =>true;// pwd.length > 6;
 }
+
 
