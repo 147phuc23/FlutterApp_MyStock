@@ -8,12 +8,8 @@ class ScreenAccount extends StatefulWidget {
 }
 
 class _ScreenAccountState extends State<ScreenAccount> {
-  @override
-  _submitInfocChange() {
-    setState(() {});
-  }
-
   TextEditingController textEditingController;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: createAppBar('Account setting'),

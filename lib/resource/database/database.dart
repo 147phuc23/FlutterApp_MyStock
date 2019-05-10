@@ -131,7 +131,7 @@ class DbProvider {
       print("Stock Exchange database already been initialized");
       return null;
     }
-    ;
+    
     print("Initialize Stock Exchange");
     String urlJson = "https://api.iextrading.com/1.0/market";
     try {
@@ -266,7 +266,7 @@ class DbProvider {
   Future<List<Map<String, dynamic>>> searchSymbol(String symbol) async {
     final db = await database;
     var res =
-        await db.rawQuery("SELECT * FROM Symbol WHERE symbol LIKE '%$symbol%'");
+        await db.rawQuery("SELECT * FROM Symbol WHERE symbol LIKE '$symbol%'");
     return res.isNotEmpty ? res : null;
   }
 

@@ -52,13 +52,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
   bool isDarkThemeEnabled = isDarkTheme;
   void toggleTheme() {
     isDarkThemeEnabled = isDarkTheme = !isDarkThemeEnabled;
     setState(() {});
   }
 
+  @override
+  
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',

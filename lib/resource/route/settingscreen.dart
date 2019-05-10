@@ -12,9 +12,10 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   final Function toggleTheme;
-  _SettingScreenState(this.toggleTheme);
-  @override
+  _SettingScreenState(this.toggleTheme);  
   bool darkThemeEnable = isDarkTheme;
+  
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         

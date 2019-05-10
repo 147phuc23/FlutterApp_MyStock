@@ -14,18 +14,20 @@ class MyHomeScreen extends StatefulWidget {
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
   bool _isSearching = false;
-  SearchBloc bloc = new SearchBloc();
+
   TextEditingController _textController = new TextEditingController();
   @override
   //bool darkThemeEnable = false;
   //List<StockWidget> stocklist;
-  
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _isSearching
           ? AppBar(
               title: Title(
-                  color: isDarkTheme ? darkTheme.appBarTheme.color : lightTheme.appBarTheme.color,
+                  color: isDarkTheme
+                      ? darkTheme.appBarTheme.color
+                      : lightTheme.appBarTheme.color,
                   child: TextField(
                     controller: _textController,
                     autocorrect: false,
@@ -64,7 +66,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                 FlatButton(
                   child: Icon(Icons.search),
                   onPressed: () {
-                    showSearch(context: context, delegate: CodeSearch(bloc.searchStream));                    
+                    showSearch(context: context, delegate: CodeSearch());
                   },
                 )
               ],
@@ -75,6 +77,18 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
       body: Container(
         child: buildListView(),
       ),
+    );
+  }
+
+  ThemeData appBarTheme(BuildContext context) {
+    assert(context != null);
+    final ThemeData theme = Theme.of(context);
+    assert(theme != null);
+    return theme.copyWith(
+      primaryColor: Colors.white,
+      primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.grey),
+      primaryColorBrightness: Brightness.light,
+      primaryTextTheme: theme.textTheme,
     );
   }
 

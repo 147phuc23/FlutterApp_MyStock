@@ -1,6 +1,3 @@
-import 'package:newproject/stockwidget.dart';
-import 'package:newproject/resource/database/database.dart';
-
 List favoriteData = [
   {
     "symbol": "APM",
