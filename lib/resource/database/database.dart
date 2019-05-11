@@ -349,6 +349,16 @@ class DbProvider {
       print("Data downloaded");
       await db.delete("${symbol.toUpperCase()}_chart_1m");
       List<DbChart1M> chart = dbChart1MFromJson(response.body);
+      chart.removeWhere((item) {
+        if (item.low == -1 ||
+            item.high == -1 ||
+            item.volume == 0 ||
+            item.open == null ||
+            item.close == null)
+          return true;
+        else
+          return false;
+      });
       List<Map<String, dynamic>> chartMap = [];
       for (int i = 0; i < chart.length; i++) {
         if (chart[i] != null) {
@@ -679,7 +689,7 @@ class DbProvider {
         "marketCap NUMBER,"
         "peRatio NUMBER"
         ")");
-    var checkDate=await db.query("RealTimeInfo",where: "symbol=?",whereArgs: [symbol]);
+    var checkDate=await db.query("RealTimeInfo",where: "symbol=?",whereArgs: [symbol.toUpperCase()]);
     List<Map<String, dynamic>> checkSymbol =
         await db.query("Symbol", where: "symbol=?", whereArgs: [symbol]);
     if (checkSymbol.isEmpty) {
@@ -692,11 +702,15 @@ class DbProvider {
     String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/quote";
     try {
       http.Response response = await http.get(urlJson);
+      print("Get data complete");
       DbQuote quote = dbQuoteFromJson(response.body);
+      print("Trans Data complete");
       if(checkDate.isNotEmpty)
-        await db.update("RealTimeInfo", quote.toMapRequired());
+        await db.update("RealTimeInfo",quote.toMapRequired(),where: "symbol=?",whereArgs: [symbol.toUpperCase()]);
       else
         await db.insert("RealTimeInfo",quote.toMapRequired());
+      print("Add data to database complete");
+      print(quote.toMapRequired());
       return quote.toMapRequired();
     } catch (e) {
       if(checkDate.isEmpty){
@@ -704,6 +718,7 @@ class DbProvider {
         return null;
       }
       var data=await db.query("RealTimeInfo",where: "symbol=?",whereArgs: [symbol]);
+      print(data);
       return data.first;
     }
   }
