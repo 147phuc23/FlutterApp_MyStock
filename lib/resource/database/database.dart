@@ -694,7 +694,7 @@ class DbProvider {
       http.Response response = await http.get(urlJson);
       DbQuote quote = dbQuoteFromJson(response.body);
       if(checkDate.isNotEmpty)
-        await db.update("RealTimeInfo", quote.toMapRequired());
+        await db.update("RealTimeInfo",quote.toMapRequired(),where: "symbol=?",whereArgs: [symbol]);
       else
         await db.insert("RealTimeInfo",quote.toMapRequired());
       return quote.toMapRequired();
