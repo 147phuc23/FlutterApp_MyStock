@@ -84,10 +84,10 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
           [
             Padding(
               padding: const EdgeInsets.fromLTRB(10,10,0,0),
-              child: Text("FAVORITE", style: TextStyle(fontSize: 40),),
+              child: Text("Top 10", style: TextStyle(fontSize: 40),),
             ),
           ],
-          // favorite.isEmpty ? Text("null"): favorite.map((f) {
+          // favorite.map((f) {
           //   return Text(f['symbol']);
           // }).toList(),
         ].expand((f) => f).toList(),
