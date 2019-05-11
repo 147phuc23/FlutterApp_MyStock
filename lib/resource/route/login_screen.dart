@@ -17,13 +17,12 @@ class _LoginScreenState extends State<LoginScreen> {
     if (authBloc.isValidInfo(
         _userTextController.text, _passTextController.text))
       Navigator.pushReplacementNamed(context, '/home');
-      isLogedIn = true;
+    isLogedIn = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
       body: Container(
         constraints: BoxConstraints.expand(),
@@ -42,7 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       // /size: 70,
                       ),
                   decoration: BoxDecoration(
-                    color: Color(0xffd8d8d8),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -64,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
@@ -84,7 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         'Login',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.black45,
                         ),
                       ),
                       Container(
@@ -141,6 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: RaisedButton(
                     child: Text(
                       "LOGIN",
+                      style: TextStyle(fontSize: 20),
                     ),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4)),
@@ -155,11 +153,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushReplacementNamed(context, '/home');
+                        },
                         child: Container(
+                          padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
                           child: Text('Login as guest',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 24,
                                 color: Colors.blue,
                               )),
                         ),
@@ -169,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Container(
                             child: Text('Sign Up',
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 24,
                                   color: Colors.blue,
                                 ))),
                       ),

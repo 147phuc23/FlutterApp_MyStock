@@ -14,10 +14,8 @@ class MyHomeScreen extends StatefulWidget {
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
   TextEditingController _textController = new TextEditingController();
-  @override
-  //bool darkThemeEnable = false;
-  //List<StockWidget> stocklist;
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -72,21 +70,24 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     return RefreshIndicator(
       child: ListView(
         children: [
-          [
+          isLogedIn ? [
             Padding(
               padding: const EdgeInsets.fromLTRB(10,10,0,0),
               child: Text("FAVORITE", style: TextStyle(fontSize: 40),),
             ),
-          ],
-          top10data.map((f) {
-            return StockWidget(f);
-          }).toList(),
+          ] : null,
+          // isLogedIn ? favoriteData.map((f) {
+          //   return StockWidget(f);
+          // }).toList() : null,
           [
             Padding(
               padding: const EdgeInsets.fromLTRB(10,10,0,0),
               child: Text("Top 10", style: TextStyle(fontSize: 40),),
             ),
           ],
+          top10data.map((f) {
+            return StockWidget(f);
+          }).toList(),
           // favorite.map((f) {
           //   return Text(f['symbol']);
           // }).toList(),

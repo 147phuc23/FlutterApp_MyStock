@@ -11,13 +11,16 @@ void main() async {
   top10data = await DbProvider.db.getTopSymbols();
   DbProvider.db.getSymbolFromFavoriteList().then((onValue) async {
     favoriteSymbol = onValue;
-    favoriteSymbol.map((f) async {
-      DbProvider.db.getRealTimeInfo(f).then((onValue) {favoriteData.add(onValue);});
-    });
+    favoriteSymbol.add("AAPL");
+    // favoriteSymbol.map((f) async {
+    //   DbProvider.db.getRealTimeInfo(f).then((onValue) {
+    //     favoriteData.add(onValue);
+    //     print(favoriteData[0]);
+    //   });
+    // });
   });
 
   runApp(MyApp());
-
 }
 
 bool isDarkTheme = false;
@@ -65,7 +68,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',
