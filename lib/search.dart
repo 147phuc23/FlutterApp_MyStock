@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:newproject/resource/bloc/bloc.dart';
+import 'package:newproject/resource/database/database.dart';
+import 'package:newproject/resource/route/detail_screen.dart';
+import 'package:path/path.dart';
 
 class CodeSearch extends SearchDelegate<Map> {
   SearchBloc bloc;
@@ -10,7 +13,7 @@ class CodeSearch extends SearchDelegate<Map> {
       IconButton(
         icon: Icon(Icons.close),
         onPressed: () {
-          close(context, null);
+          query = "";
         },
       )
     ];
@@ -28,15 +31,17 @@ class CodeSearch extends SearchDelegate<Map> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     return Container();
+  }
+
+  Future fetchData(symbol) async {
+    Map code = await DbProvider.db.getRealTimeInfo(symbol);
+    return code;
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
-
-    bloc.updateSearch(query==null?"":query);
+    bloc.updateSearch(query == null ? "" : query);
     return StreamBuilder(
       stream: bloc.searchStream,
       builder: (context, snapshot) {
@@ -46,12 +51,31 @@ class CodeSearch extends SearchDelegate<Map> {
             itemCount: results.length,
             itemBuilder: (context, index) {
               var result = results[index];
-              return ListTile(
-                title: Text(result['symbol']),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FutureBuilder(
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData)
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                InforDetailScreen(
+                                                    snapshot.data)));                                  
+                                },
+                                future: fetchData(result['symbol']),
+                              )));
+                },
+                child: ListTile(
+                  title: Text(result['symbol']),
+                ),
               );
             },
           );
-        }else if(!snapshot.hasData){
+        } else if (!snapshot.hasData) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +83,7 @@ class CodeSearch extends SearchDelegate<Map> {
               Center(child: CircularProgressIndicator()),
             ],
           );
-        }else if(snapshot.data.length==0){
+        } else if (snapshot.data.length == 0) {
           return Column(
             children: <Widget>[
               Text(
@@ -68,7 +92,7 @@ class CodeSearch extends SearchDelegate<Map> {
             ],
           );
         }
-        ;
+        
       },
     );
   }

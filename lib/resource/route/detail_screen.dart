@@ -13,7 +13,7 @@ class InforDetailScreen extends StatefulWidget {
 
 class _InforDetailScreenState extends State<InforDetailScreen> {
   String _graphMode = "1 month";
- 
+
   Future<double> fetchData() async {
     switch (_graphMode) {
       case "1 month":
@@ -159,7 +159,7 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
                       setState(() {
                         _graphMode = value;
                       });
-                    },  
+                    },
                   ),
                 ],
               ),

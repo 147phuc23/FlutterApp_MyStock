@@ -13,7 +13,6 @@ class MyHomeScreen extends StatefulWidget {
 }
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
-  bool _isSearching = false;
 
   TextEditingController _textController = new TextEditingController();
   @override
@@ -22,28 +21,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _isSearching
-          ? AppBar(
-              title: Title(
-                  color: isDarkTheme
-                      ? darkTheme.appBarTheme.color
-                      : lightTheme.appBarTheme.color,
-                  child: TextField(
-                    controller: _textController,
-                    autocorrect: false,
-                    keyboardType: TextInputType.text,
-                    style: Theme.of(context).textTheme.subhead,
-                    onChanged: (value) => _handleFilter(value),
-                    autofocus: true,
-                    textCapitalization: TextCapitalization.none,
-                    decoration: new InputDecoration.collapsed(
-                        hintText: 'Search names and symbols...'),
-                  )),
-              backgroundColor: isDarkTheme
-                  ? darkTheme.primaryColor
-                  : lightTheme.primaryColor,
-            )
-          : AppBar(
+      appBar: AppBar(
               leading: FlatButton(
                 child: Icon(Icons.menu),
                 onPressed: () {
@@ -107,5 +85,4 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     );
   }
 
-  _handleFilter(String value) {}
 }
