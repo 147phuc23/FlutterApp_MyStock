@@ -58,25 +58,25 @@ class DbQuote implements DataTranform{
 
 
   factory DbQuote.fromMap(Map<String, dynamic> json) => new DbQuote(
-    symbol: json["symbol"],
+    symbol: json["symbol"].toString().toUpperCase(),
     companyName: json["companyName"],
     primaryExchange: json["primaryExchange"],
     sector: json["sector"],
     calculationPrice: json["calculationPrice"],
-    open: json["open"].toDouble(),
-    close: json["close"].toDouble(),
-    high: json["high"].toDouble(),
-    low: json["low"].toDouble(),
+    open: json["open"]==null?null:json["open"].toDouble(),
+    close: json["close"]==null?null:json["close"].toDouble(),
+    high: json["high"]==null?null:json["high"].toDouble(),
+    low: json["low"]==null?null:json["low"].toDouble(),
     latestPrice: json["latestPrice"].toDouble(),
     latestSource: json["latestSource"],
     latestTime: json["latestTime"],
     latestUpdate: json["latestUpdate"],
     latestVolume: json["latestVolume"],
-    previousClose: json["previousClose"].toDouble(),
-    change: json["change"].toDouble(),
-    changePercent: json["changePercent"].toDouble(),
+    previousClose: json["previousClose"]==null?null:json["previousClose"].toDouble(),
+    change: json["change"]==null?null:json["change"].toDouble(),
+    changePercent: json["changePercent"]==null?null:json["changePercent"].toDouble(),
     marketCap: json["marketCap"],
-    peRatio: json["peRatio"].toDouble(),
+    peRatio: json["peRatio"]==null?null:json["peRatio"].toDouble(),
   );
 
   Map<String, dynamic> toMap() => {
