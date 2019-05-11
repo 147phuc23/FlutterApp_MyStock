@@ -9,17 +9,13 @@ bool isLogedIn = false;
 
 void main() async {
   top10data = await DbProvider.db.getTopSymbols();
-  DbProvider.db.getSymbolFromFavoriteList().then((onValue) async {
-    favoriteSymbol = onValue;
-    favoriteSymbol.add("AAPL");
-    // favoriteSymbol.map((f) async {
-    //   DbProvider.db.getRealTimeInfo(f).then((onValue) {
-    //     favoriteData.add(onValue);
-    //     print(favoriteData[0]);
-    //   });
-    // });
-  });
-
+  await DbProvider.db.addToFavoriteList("AAPL");
+  await DbProvider.db.addToFavoriteList("GOOGL");
+  await DbProvider.db.addToFavoriteList("TSLA");
+  favoriteSymbol=await DbProvider.db.getSymbolFromFavoriteList();
+  for(var f in favoriteSymbol){
+    print(f);
+  }
   runApp(MyApp());
 }
 

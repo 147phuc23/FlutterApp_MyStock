@@ -517,6 +517,7 @@ class DbProvider {
   //    "close": close,
   // };
   Future<List<Map<String, dynamic>>> getChartInfo_3d(String symbol) async {
+    print("Begin get chart 3 d");
     var db = await database;
     await db
         .execute("CREATE TABLE IF NOT EXISTS ${symbol.toUpperCase()}_chart_3d ("
@@ -565,6 +566,7 @@ class DbProvider {
       for (int i = 0; i < chart.length; i++) {
         if (chart[i] != null) chartMap.add(chart[i].toMapRequired());
       }
+      print("Done 2 days ago");
       time = DateTime.now();
       time = time.subtract(new Duration(days: 1));
       dateFormatter = formatter.format(time);
@@ -585,6 +587,7 @@ class DbProvider {
       for (int i = 0; i < chart.length; i++) {
         if (chart[i] != null) chartMap.add(chart[i].toMapRequired());
       }
+      print("Done 1 days ago");
       urlJson =
           "https://api.iextrading.com/1.0/stock/$symbol/chart/1d?chartInterval=10";
       response = await http.get(urlJson);
@@ -602,16 +605,7 @@ class DbProvider {
       for (int i = 0; i < chart.length; i++) {
         if (chart[i] != null) chartMap.add(chart[i].toMapRequired());
       }
-      chartMap.removeWhere((item) {
-        if (item['high'] == '-1.0' ||
-            item['low'] == '-1.0' ||
-            item['volume'] == '0' ||
-            item['open'] == 'null' ||
-            item['close'] == 'null')
-          return true;
-        else
-          return false;
-      });
+      print("Done today");
       //Add data to database
       List<Map<String, dynamic>> returnChart = [];
       await db.delete("${symbol.toUpperCase()}_chart_3d");
