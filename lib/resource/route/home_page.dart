@@ -13,7 +13,6 @@ class MyHomeScreen extends StatefulWidget {
 }
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
-
   TextEditingController _textController = new TextEditingController();
   @override
   //bool darkThemeEnable = false;
@@ -22,36 +21,35 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-              leading: FlatButton(
-                child: Icon(Icons.menu),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/setting');
-                }, //Navigator(),
-              ),
-              centerTitle: true,
-              title: Title(
-                color: Theme.of(context).primaryColor,
-                child: Text(
-                  "Main App",
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 20,
-                    color: Colors.blueGrey,
-                  ),
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Icon(Icons.search),
-                  onPressed: () {
-                    showSearch(context: context, delegate: CodeSearch(SearchBloc()));
-                  },
-                )
-              ],
-              backgroundColor: isDarkTheme
-                  ? darkTheme.primaryColor
-                  : lightTheme.primaryColor,
+        leading: FlatButton(
+          child: Icon(Icons.menu),
+          onPressed: () {
+            Navigator.pushNamed(context, '/setting');
+          }, //Navigator(),
+        ),
+        centerTitle: true,
+        title: Title(
+          color: Theme.of(context).primaryColor,
+          child: Text(
+            "Main App",
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 20,
+              color: Colors.blueGrey,
             ),
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: CodeSearch(SearchBloc()));
+            },
+          )
+        ],
+        backgroundColor:
+            isDarkTheme ? darkTheme.primaryColor : lightTheme.primaryColor,
+      ),
       body: Container(
         child: buildListView(),
       ),
@@ -73,16 +71,31 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   buildListView() {
     return RefreshIndicator(
       child: ListView(
-        scrollDirection: Axis.vertical,
-        children: dataShow.map((f) {
-          return StockWidget(f);
-        }).toList(),
+        children: [
+          [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10,10,0,0),
+              child: Text("FAVORITE", style: TextStyle(fontSize: 40),),
+            ),
+          ],
+          top10.map((f) {
+            return StockWidget(f);
+          }).toList(),
+          [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10,10,0,0),
+              child: Text("FAVORITE", style: TextStyle(fontSize: 40),),
+            ),
+          ],
+          // favorite.isEmpty ? Text("null"): favorite.map((f) {
+          //   return Text(f['symbol']);
+          // }).toList(),
+        ].expand((f) => f).toList(),
       ),
       onRefresh: () async {
-        dataShow = await DbProvider.db.getTopSymbols();
+        top10 = await DbProvider.db.getTopSymbols();
         setState(() {});
       },
     );
   }
-
 }

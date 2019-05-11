@@ -1,8 +1,6 @@
 import 'dart:async';
-
-
+import './login_info.dart';
 import 'package:newproject/resource/database/database.dart';
-
 import '../../demodata.dart';
 
 class AuthBloc {
@@ -13,17 +11,19 @@ class AuthBloc {
   Stream get passStream => _passController.stream;
 
   bool isValidInfo(String usr, String pwd) {
-    if (!Validation.isValidUserName(usr)) {
+    return true;
+    if (!AccountValidation.isValidUserName(usr)) {
       _userController.sink.addError("Tên đăng nhập không hợp lệ!");
       return false;
     }
-    if (!Validation.isValidPassword(pwd)) {
+    if (!AccountValidation.isValidPassword(pwd)) {
       _passController.sink.addError("Mật khẩu không hợp lệ!");
       return false;
     }
-    _userController.sink.add("ok");
-    _passController.sink.add("ok");
-    return true;
+    accountList.forEach((f) {
+      if (f.username == usr) if (f.password == pwd) return true;
+    });
+    return false; 
   }
 
   void dispose() {
@@ -36,21 +36,20 @@ class SearchBloc {
   StreamController _searchStreamController = StreamController.broadcast();
   Stream get searchStream => _searchStreamController.stream;
 
-  List<Map<String,dynamic>> listData=[];
-  
-  void updateSearch(String query)async{
-    if(query==null) return;
-    listData=await DbProvider.db.searchSymbol(query);
+  List<Map<String, dynamic>> listData = [];
+
+  void updateSearch(String query) async {
+    if (query == null) return;
+    listData = await DbProvider.db.searchSymbol(query);
     _searchStreamController.sink.add(listData);
   }
 
-  void dispose(){
+  void dispose() {
     _searchStreamController.close();
   }
 }
 
-class Validation {
-  static bool isValidUserName(String usrname) =>
-      true; // usrname.contains('@') && usrname.length > 6;
-  static bool isValidPassword(String pwd) => true; // pwd.length > 6;
+class AccountValidation {
+  static bool isValidUserName(String usrname) => usrname.length > 6;
+  static bool isValidPassword(String pwd) => pwd.length > 6;
 }
