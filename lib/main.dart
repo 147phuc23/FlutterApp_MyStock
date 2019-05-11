@@ -8,8 +8,14 @@ import 'package:newproject/resource/route/settingscreen.dart';
 bool isLogedIn = false;
 
 void main() async {
-  top10 = await DbProvider.db.getTopSymbols();
-  favorite = await DbProvider.db.getSymbolFromFavoriteList();
+  top10data = await DbProvider.db.getTopSymbols();
+  DbProvider.db.getSymbolFromFavoriteList().then((onValue) async {
+    favoriteSymbol = onValue;
+    favoriteSymbol.map((f) async {
+      DbProvider.db.getRealTimeInfo(f).then((onValue) {favoriteData.add(onValue);});
+    });
+  });
+
   runApp(MyApp());
 
 }

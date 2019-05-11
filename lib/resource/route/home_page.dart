@@ -78,7 +78,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               child: Text("FAVORITE", style: TextStyle(fontSize: 40),),
             ),
           ],
-          top10.map((f) {
+          top10data.map((f) {
             return StockWidget(f);
           }).toList(),
           [
@@ -93,7 +93,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         ].expand((f) => f).toList(),
       ),
       onRefresh: () async {
-        top10 = await DbProvider.db.getTopSymbols();
+        top10data = await DbProvider.db.getTopSymbols();
         setState(() {});
       },
     );

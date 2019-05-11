@@ -6,6 +6,7 @@ class Account {
   String password;
   Account(@required this.username ,@required this.password );
   Map favoriteList = null;
+  String name;
 }
 
 List<Account> accountList = [
