@@ -5,7 +5,7 @@ import 'package:newproject/resource/database/database.dart';
 
 class InforDetailScreen extends StatefulWidget {
   final code;
-  List sampleData;
+  List sampleData = [];
   InforDetailScreen(this.code);
   @override
   _InforDetailScreenState createState() => _InforDetailScreenState();

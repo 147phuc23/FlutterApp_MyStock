@@ -421,5 +421,5 @@ List favoriteData = [
   }
 ];
 List top10;
-List favorite;
+List favorite = [];
 

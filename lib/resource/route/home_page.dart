@@ -79,7 +79,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
             ),
           ],
           top10.map((f) {
-            return Text(f['symbol']);
+            return StockWidget(f);
           }).toList(),
           [
             Padding(
@@ -87,9 +87,9 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               child: Text("FAVORITE", style: TextStyle(fontSize: 40),),
             ),
           ],
-          favorite.map((f) {
-            return StockWidget(f);
-          }).toList(),
+          // favorite.isEmpty ? Text("null"): favorite.map((f) {
+          //   return Text(f['symbol']);
+          // }).toList(),
         ].expand((f) => f).toList(),
       ),
       onRefresh: () async {
