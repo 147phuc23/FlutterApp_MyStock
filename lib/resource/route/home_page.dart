@@ -13,35 +13,15 @@ class MyHomeScreen extends StatefulWidget {
 }
 
 class _MyHomeScreenState extends State<MyHomeScreen> {
-  bool _isSearching = false;
-  SearchBloc bloc = new SearchBloc();
+
   TextEditingController _textController = new TextEditingController();
   @override
   //bool darkThemeEnable = false;
   //List<StockWidget> stocklist;
-  
+
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _isSearching
-          ? AppBar(
-              title: Title(
-                  color: isDarkTheme ? darkTheme.appBarTheme.color : lightTheme.appBarTheme.color,
-                  child: TextField(
-                    controller: _textController,
-                    autocorrect: false,
-                    keyboardType: TextInputType.text,
-                    style: Theme.of(context).textTheme.subhead,
-                    onChanged: (value) => _handleFilter(value),
-                    autofocus: true,
-                    textCapitalization: TextCapitalization.none,
-                    decoration: new InputDecoration.collapsed(
-                        hintText: 'Search names and symbols...'),
-                  )),
-              backgroundColor: isDarkTheme
-                  ? darkTheme.primaryColor
-                  : lightTheme.primaryColor,
-            )
-          : AppBar(
+      appBar: AppBar(
               leading: FlatButton(
                 child: Icon(Icons.menu),
                 onPressed: () {
@@ -78,6 +58,18 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     );
   }
 
+  ThemeData appBarTheme(BuildContext context) {
+    assert(context != null);
+    final ThemeData theme = Theme.of(context);
+    assert(theme != null);
+    return theme.copyWith(
+      primaryColor: Colors.white,
+      primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.grey),
+      primaryColorBrightness: Brightness.light,
+      primaryTextTheme: theme.textTheme,
+    );
+  }
+
   buildListView() {
     return RefreshIndicator(
       child: ListView(
@@ -93,5 +85,4 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     );
   }
 
-  _handleFilter(String value) {}
 }

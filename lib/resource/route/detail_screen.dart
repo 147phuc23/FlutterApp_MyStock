@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:newproject/flutter_candlesticks.dart';
 import 'package:newproject/main.dart';
 import 'package:newproject/resource/database/database.dart';
-import 'package:newproject/stockwidget.dart';
 
 class InforDetailScreen extends StatefulWidget {
   final code;
@@ -13,12 +12,23 @@ class InforDetailScreen extends StatefulWidget {
 }
 
 class _InforDetailScreenState extends State<InforDetailScreen> {
-  @override
-  Future<double> fetchData()async{
-    widget.sampleData=await DbProvider.db.getChartInfo_1m(widget.code["symbol"]);
+  String _graphMode = "1 month";
+
+  Future<double> fetchData() async {
+    switch (_graphMode) {
+      case "1 month":
+        widget.sampleData =
+            await DbProvider.db.getChartInfo_1m(widget.code["symbol"]);
+        break;
+      case "1 day":
+        widget.sampleData =
+            await DbProvider.db.getChartInfo_1d(widget.code["symbol"]);
+        break;
+    }
     return widget.sampleData[0]["open"].toDouble();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: createAppBar('Details'),
@@ -52,7 +62,6 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
                 Text("${widget.code["primaryExchange"]}",
                     style: TextStyle(
                       fontSize: 21,
-                      color: Colors.black54,
                     )),
               ],
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -128,13 +137,31 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                'Graph',
-                style: TextStyle(
-                  fontSize: 32,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w200,
-                ),
+              Row(
+                children: <Widget>[
+                  Text(
+                    'Graph',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w200,
+                    ),
+                  ),
+                  Spacer(),
+                  DropdownButton(
+                    hint: Text(_graphMode),
+                    items: ["1 day", "3 day", "1 month"].map((f) {
+                      return DropdownMenuItem(
+                        child: Text(f),
+                        value: f,
+                      );
+                    }).toList(),
+                    onChanged: (String value) {
+                      setState(() {
+                        _graphMode = value;
+                      });
+                    },
+                  ),
+                ],
               ),
               Container(
                 child: futureWidget(),
@@ -171,7 +198,7 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
             enableGridLines: true,
             volumeProp: 0.2,
             lineWidth: 0.5,
-            decreaseColor: Colors.orangeAccent,
+            decreaseColor: Colors.redAccent,
             increaseColor: Colors.purple,
             labelPrefix: "",
           );

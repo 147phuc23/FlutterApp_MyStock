@@ -1,6 +1,3 @@
-import 'package:newproject/stockwidget.dart';
-import 'package:newproject/resource/database/database.dart';
-
 List favoriteData = [
   {
     "symbol": "APM",
@@ -423,5 +420,6 @@ List favoriteData = [
     "ytdChange": 0.40436340611353716
   }
 ];
-List dataShow; 
+List dataShow;
+
 

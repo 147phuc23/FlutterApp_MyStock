@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:newproject/resource/route/detail_screen.dart';
-import 'main.dart';
-
-class StockCode {
-  final String name, fullname, market;
-  double price;
-  StockCode(this.name, this.fullname, this.price, {this.market = 'NASDAQ'});
-}
 
 class StockWidget extends StatelessWidget {
-  Map code;
-  @override
+  final Map code;
+  
   StockWidget(this.code);
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 5, 12, 0),
@@ -41,7 +35,6 @@ class StockWidget extends StatelessWidget {
                           "${code["companyName"]}",
                           style: TextStyle(
                             fontFamily: 'Roboto',
-                            color: Colors.black26,
                             fontSize: 14,
                           ),
                         ),
@@ -60,14 +53,24 @@ class StockWidget extends StatelessWidget {
                         fontFamily: 'Helvetica',
                         fontSize: 22,
                       )),
-                  Text(code["changePercent"].toString(),
-                      style: TextStyle(
-                        fontFamily: 'Helvetica',
-                        color:true// code["changePercent"] > 0
-                            ? Colors.green
-                            : Colors.red,
-                        fontSize: 12,
-                      )),
+                  Row(
+                    children: <Widget>[
+                      code["changePercent"] > 0 ? Icon(
+                        Icons.arrow_upward,
+                        color: 
+                            Colors.lightGreen,
+                            
+                      ) : Icon(Icons.arrow_downward, color: Colors.red[200]),
+                      Text(code["changePercent"].toString(),
+                          style: TextStyle(
+                            fontFamily: 'Helvetica',
+                            color: code["changePercent"] > 0
+                                ? Colors.green
+                                : Colors.red,
+                            fontSize: 12,
+                          )),
+                    ],
+                  ),
                 ],
               ),
             ],
