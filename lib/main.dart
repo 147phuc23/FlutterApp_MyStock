@@ -11,6 +11,7 @@ void main() async {
   top10 = await DbProvider.db.getTopSymbols();
   favorite = await DbProvider.db.getSymbolFromFavoriteList();
   runApp(MyApp());
+
 }
 
 bool isDarkTheme = false;

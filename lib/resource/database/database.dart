@@ -662,16 +662,24 @@ class DbProvider {
   //  };
   Future<Map<String, dynamic>> getRealTimeInfo(String symbol) async {
     var db = await database;
-    await db.execute("CREATE TABLE IF NOT EXISTS ${symbol.toUpperCase()}_real_time_info ("
+    await db.execute("CREATE TABLE IF NOT EXISTS RealTimeInfo("
         "symbol TEXT,"
-         "open NUMBER,"
-         "close NUMBER,"
-         "high NUMBER,"
-         "low NUMBER,"
-         "marketCap NUMBER,"
-         "peRatio NUMBER"
+        "companyName TEXT,"
+        "sector TEXT,"
+        "primaryExchange TEXT,"
+        "open NUMBER,"
+        "close NUMBER,"
+        "high NUMBER,"
+        "low NUMBER,"
+        "latestPrice NUMBER,"
+        "latestSource TEXT,"
+        "previousClose NUMBER,"
+        "change NUMBER,"
+        "changePercent NUMBER,"
+        "marketCap NUMBER,"
+        "peRatio NUMBER"
         ")");
-    var checkDate=await db.query("${symbol.toUpperCase()}_real_time_info",where: "symbol LIKE 'haveData'");
+    var checkDate=await db.query("RealTimeInfo",where: "symbol=?",whereArgs: [symbol]);
     List<Map<String, dynamic>> checkSymbol =
         await db.query("Symbol", where: "symbol=?", whereArgs: [symbol]);
     if (checkSymbol.isEmpty) {
@@ -684,18 +692,18 @@ class DbProvider {
     String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/quote";
     try {
       http.Response response = await http.get(urlJson);
-      await db.delete("${symbol.toUpperCase()}_real_time_info");
       DbQuote quote = dbQuoteFromJson(response.body);
-      await db.insert("${symbol.toUpperCase()}_real_time_info", quote.toMapRequired());
-      await db.insert("${symbol.toUpperCase()}_real_time_info", {"symbol":"haveData"});
+      if(checkDate.isNotEmpty)
+        await db.update("RealTimeInfo", quote.toMapRequired());
+      else
+        await db.insert("RealTimeInfo",quote.toMapRequired());
       return quote.toMapRequired();
     } catch (e) {
       if(checkDate.isEmpty){
         print("Not have data available");
         return null;
       }
-      var data=await db.query("${symbol.toUpperCase()}_real_time_info");
-      data.removeLast();
+      var data=await db.query("RealTimeInfo",where: "symbol=?",whereArgs: [symbol]);
       return data.first;
     }
   }
