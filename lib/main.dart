@@ -12,6 +12,7 @@ bool isLogedIn = false;
 void main() async {
   dataShow = await DbProvider.db.getTopSymbols();
   runApp(MyApp());
+
 }
 
 bool isDarkTheme = false;

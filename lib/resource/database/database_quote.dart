@@ -39,9 +39,7 @@ class DbQuote implements DataTranform{
     this.sector,
     this.calculationPrice,
     this.open,
-    this.openTime,
     this.close,
-    this.closeTime,
     this.high,
     this.low,
     this.latestPrice,
@@ -55,7 +53,6 @@ class DbQuote implements DataTranform{
     this.avgTotalVolume,
     this.marketCap,
     this.peRatio,
-
   });
 
 
@@ -67,9 +64,7 @@ class DbQuote implements DataTranform{
     sector: json["sector"],
     calculationPrice: json["calculationPrice"],
     open: json["open"].toDouble(),
-    openTime: json["openTime"],
     close: json["close"].toDouble(),
-    closeTime: json["closeTime"],
     high: json["high"].toDouble(),
     low: json["low"].toDouble(),
     latestPrice: json["latestPrice"].toDouble(),
@@ -110,12 +105,20 @@ class DbQuote implements DataTranform{
     "ytdChange": ytdChange,
   };
   Map<String, dynamic> toMapRequired() => {
-    "symbol":symbol,
-    "open": open,
-    "close": close,
-    "high": high,
-    "low": low,
-    "marketCap": marketCap,
-    "peRatio": peRatio,
+      "symbol":symbol,
+      "companyName":companyName,
+      "sector":sector,
+      "primaryExchange":primaryExchange,
+      "open":open,
+      "close":close,
+      "high":high,
+      "low":low,
+      "latestPrice":latestPrice,
+      "latestSource":latestSource,
+      "previousClose":previousClose,
+      "change":change,
+      "changePercent":changePercent,
+      "marketCap":marketCap,
+      "peRatio":peRatio
   };
 }
