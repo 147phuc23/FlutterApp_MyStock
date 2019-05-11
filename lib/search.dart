@@ -34,7 +34,7 @@ class CodeSearch extends SearchDelegate<Map> {
     return Container();
   }
 
-  Future fetchData(symbol) async {
+  fetchData(symbol) async {
     Map code = await DbProvider.db.getRealTimeInfo(symbol);
     return code;
   }
@@ -52,22 +52,10 @@ class CodeSearch extends SearchDelegate<Map> {
             itemBuilder: (context, index) {
               var result = results[index];
               return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FutureBuilder(
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData)
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                InforDetailScreen(
-                                                    snapshot.data)));                                  
-                                },
-                                future: fetchData(result['symbol']),
-                              )));
+                onTap: () async {
+                  result = await fetchData(result["symbol"]);
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => InforDetailScreen(result)));
                 },
                 child: ListTile(
                   title: Text(result['symbol']),
@@ -92,7 +80,6 @@ class CodeSearch extends SearchDelegate<Map> {
             ],
           );
         }
-        
       },
     );
   }

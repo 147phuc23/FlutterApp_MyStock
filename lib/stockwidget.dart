@@ -29,7 +29,7 @@ class StockWidget extends StatelessWidget {
                         Text('${code["symbol"]}',
                             style: TextStyle(
                               fontFamily: 'Helvetica',
-                              fontSize: 20,
+                              fontSize: 25,
                             )),
                         Text(
                           "${code["companyName"]}",

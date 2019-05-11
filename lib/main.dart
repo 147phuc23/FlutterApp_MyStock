@@ -5,12 +5,11 @@ import 'package:newproject/resource/route/home_page.dart';
 import 'package:newproject/resource/route/login_screen.dart';
 import 'package:newproject/resource/route/settingscreen.dart';
 
-String username = "abcxyzt";
-String password = "123456";
 bool isLogedIn = false;
 
 void main() async {
-  dataShow = await DbProvider.db.getTopSymbols();
+  top10 = await DbProvider.db.getTopSymbols();
+  favorite = await DbProvider.db.getSymbolFromFavoriteList();
   runApp(MyApp());
 }
 

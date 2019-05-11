@@ -420,6 +420,6 @@ List favoriteData = [
     "ytdChange": 0.40436340611353716
   }
 ];
-List dataShow;
-
+List top10;
+List favorite;
 

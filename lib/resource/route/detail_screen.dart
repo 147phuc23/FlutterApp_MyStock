@@ -46,7 +46,7 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("${widget.code["companyName"]} ",
+            Text(" ${widget.code["companyName"]} ",
                 style: TextStyle(
                   fontSize: 23,
                   fontWeight: FontWeight.w200,
