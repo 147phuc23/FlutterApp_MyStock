@@ -12,10 +12,8 @@ void main() async {
   await DbProvider.db.addToFavoriteList("AAPL");
   await DbProvider.db.addToFavoriteList("GOOGL");
   await DbProvider.db.addToFavoriteList("TSLA");
-  favoriteSymbol=await DbProvider.db.getSymbolFromFavoriteList();
-  for(var f in favoriteSymbol){
-    print(f);
-  }
+  favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
+  favoriteSymbol.forEach((f) async {favoriteData.add(await DbProvider.db.getRealTimeInfo(f));});
   runApp(MyApp());
 }
 
@@ -70,8 +68,8 @@ class _MyAppState extends State<MyApp> {
         theme: isDarkTheme ? darkTheme : lightTheme,
         home: LoginScreen(),
         routes: <String, WidgetBuilder>{
-          '/login': (context) => LoginScreen(),
           '/home': (context) => MyHomeScreen(),
+          '/login': (context) => LoginScreen(),          
           '/setting': (context) => SettingScreen(toggleTheme),
         });
   }

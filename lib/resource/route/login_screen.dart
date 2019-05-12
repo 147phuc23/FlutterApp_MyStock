@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:newproject/resource/route/home_page.dart';
 import 'package:newproject/main.dart';
 import 'package:newproject/resource/bloc/bloc.dart';
+import 'package:newproject/resource/route/settingscreen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -18,6 +19,11 @@ class _LoginScreenState extends State<LoginScreen> {
         _userTextController.text, _passTextController.text))
       Navigator.pushReplacementNamed(context, '/home');
     isLogedIn = true;
+  }
+
+  void _onSubmitAsGuest() {
+    Navigator.pushReplacementNamed(context, '/home');
+    isLogedIn = false;
   }
 
   @override
@@ -152,10 +158,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushReplacementNamed(context, '/home');
-                        },
+                      FlatButton(
+                        onPressed: _onSubmitAsGuest,
                         child: Container(
                           padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
                           child: Text('Login as guest',
@@ -165,8 +169,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               )),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {},
+                      FlatButton(
+                        onPressed: _onSubmitAsGuest,
                         child: Container(
                             child: Text('Sign Up',
                                 style: TextStyle(

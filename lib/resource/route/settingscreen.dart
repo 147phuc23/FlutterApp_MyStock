@@ -17,8 +17,7 @@ class _SettingScreenState extends State<SettingScreen> {
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        
+    return Scaffold(        
         appBar: createAppBar('Setting'),
         body: ListView(children: <Widget>[
           Container(
@@ -39,8 +38,7 @@ class _SettingScreenState extends State<SettingScreen> {
               title: Text('Toggle Theme'),
               trailing: RaisedButton(                
                 onPressed: toggleTheme,
-                child: Text('Dark Theme'),
-                
+                child: Text('Dark Theme'),                
               ),
             ),
           ),
@@ -64,13 +62,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   onPressed: () {                    
                     Navigator.pop(context);
                     Navigator.pop(context);
-                    Navigator.pop(context);
+                    if (Navigator.of(context).canPop()) Navigator.of(context).pop();
                     Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                   },
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
                     child: Text(
-                      'Sign out',
+                      'Log in',
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.w100),
                     ),

@@ -69,29 +69,50 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   buildListView() {
     return RefreshIndicator(
       child: ListView(
-        children: [
-          isLogedIn ? [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10,10,0,0),
-              child: Text("FAVORITE", style: TextStyle(fontSize: 40),),
-            ),
-          ] : null,
-          // isLogedIn ? favoriteData.map((f) {
-          //   return StockWidget(f);
-          // }).toList() : null,
-          [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10,10,0,0),
-              child: Text("Top 10", style: TextStyle(fontSize: 40),),
-            ),
-          ],
-          top10data.map((f) {
-            return StockWidget(f);
-          }).toList(),
-          // favorite.map((f) {
-          //   return Text(f['symbol']);
-          // }).toList(),
-        ].expand((f) => f).toList(),
+        children: isLogedIn
+            ? [
+                [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                    child: Text(
+                      "FAVORITE",
+                      style: TextStyle(fontSize: 40),
+                    ),
+                  ),
+                ],
+                favoriteData.map((f) {
+                  return StockWidget(f);
+                }).toList(),
+                [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                    child: Text(
+                      "Top 10",
+                      style: TextStyle(fontSize: 40),
+                    ),
+                  ),
+                ],
+                top10data.map((f) {
+                  return StockWidget(f);
+                }).toList(),
+                favoriteData.map((f) {
+                  return Text(f['symbol']);
+                }).toList(),
+              ].expand((f) => f).toList()
+            : [
+                [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                    child: Text(
+                      "Top 10",
+                      style: TextStyle(fontSize: 40),
+                    ),
+                  ),
+                ],
+                top10data.map((f) {
+                  return StockWidget(f);
+                }).toList(),
+              ].expand((f) => f).toList(),
       ),
       onRefresh: () async {
         top10data = await DbProvider.db.getTopSymbols();

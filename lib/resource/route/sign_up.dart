@@ -15,30 +15,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       appBar: createAppBar("Sign Up"),
       body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(16),
-              child: TextField(
-                controller: _usernameTextController,
-                decoration: InputDecoration(
-                    labelText: "Username",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    )),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(16),
+                child: TextField(
+                  controller: _usernameTextController,
+                  decoration: InputDecoration(
+                      labelText: "Username",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      )),
+                ),
               ),
-            ),
-            SizedBox(        
-              width: double.infinity,
-              height: 20,
-              child: RaisedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/login');
-                },
-                child: Text("Submit"),
-              ),
-            )
-          ],
+              SizedBox(        
+                width: double.infinity,
+                height: 20,
+                child: RaisedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/login');
+                  },
+                  child: Text("Submit"),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

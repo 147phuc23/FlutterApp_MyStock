@@ -37,7 +37,6 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
           children: <Widget>[
             createInfoTab(),
             createGraphContainer(),
-            createRawDataContainer(),
           ],
         ));
   }
@@ -149,7 +148,7 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
                   Spacer(),
                   DropdownButton(
                     hint: Text(_graphMode),
-                    items: ["1 day", "3 day", "1 month"].map((f) {
+                    items: ["1 day", "1 month"].map((f) {
                       return DropdownMenuItem(
                         child: Text(f),
                         value: f,
@@ -172,22 +171,7 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
           ),
         ),
       );
-  Widget createRawDataContainer() => Container(
-        child: Container(
-          padding: EdgeInsets.fromLTRB(13, 13, 10, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Raw Data',
-                style: TextStyle(
-                  fontSize: 32,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+  
   Widget futureWidget() {
     return new FutureBuilder(
       future: fetchData(),

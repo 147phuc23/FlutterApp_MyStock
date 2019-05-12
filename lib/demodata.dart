@@ -422,5 +422,5 @@
 // ];
 List top10data;
 List favoriteSymbol;
-List<Map> favoriteData;
+List<Map> favoriteData = [];
 
