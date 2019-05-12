@@ -3,11 +3,11 @@
 //     final dbQuote = dbQuoteFromJson(jsonString);
 
 import 'dart:convert';
-import './database_interface_data_tranform.dart';
+
 
 DbQuote dbQuoteFromJson(String str) => DbQuote.fromMap(json.decode(str));
 
-class DbQuote implements DataTranform{
+class DbQuote{
   String symbol;
   String companyName;
   String primaryExchange;

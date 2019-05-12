@@ -3,11 +3,11 @@
 //     final dbChart1M = dbChart1MFromJson(jsonString);
 
 import 'dart:convert';
-import './database_interface_data_tranform.dart';
+
 
 List<DbChart1M> dbChart1MFromJson(String str) => new List<DbChart1M>.from(json.decode(str).map((x) => DbChart1M.fromMap(x)));
 
-class DbChart1M implements DataTranform {
+class DbChart1M {
   DateTime date;
   double open;
   double high;
