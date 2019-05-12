@@ -3,8 +3,8 @@ import 'package:newproject/resource/route/detail_screen.dart';
 
 class StockWidget extends StatelessWidget {
   final Map code;
-  
-  StockWidget(this.code);
+  bool isFavorite;
+  StockWidget(this.code, {this.isFavorite = false});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,7 +20,7 @@ class StockWidget extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => InforDetailScreen(code),
+                            builder: (context) => InforDetailScreen(code,isFavorite: this.isFavorite),
                           ));
                     },
                     child: Column(
@@ -55,12 +55,12 @@ class StockWidget extends StatelessWidget {
                       )),
                   Row(
                     children: <Widget>[
-                      code["changePercent"] > 0 ? Icon(
-                        Icons.arrow_upward,
-                        color: 
-                            Colors.lightGreen,
-                            
-                      ) : Icon(Icons.arrow_downward, color: Colors.red[200]),
+                      code["changePercent"] > 0
+                          ? Icon(
+                              Icons.arrow_upward,
+                              color: Colors.lightGreen,
+                            )
+                          : Icon(Icons.arrow_downward, color: Colors.red[200]),
                       Text(code["changePercent"].toString(),
                           style: TextStyle(
                             fontFamily: 'Helvetica',

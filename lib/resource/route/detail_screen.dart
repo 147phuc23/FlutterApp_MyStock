@@ -5,8 +5,9 @@ import 'package:newproject/resource/database/database.dart';
 
 class InforDetailScreen extends StatefulWidget {
   final code;
+  bool isFavorite;
   List sampleData = [];
-  InforDetailScreen(this.code);
+  InforDetailScreen(this.code, {this.isFavorite = false});
   @override
   _InforDetailScreenState createState() => _InforDetailScreenState();
 }
@@ -31,7 +32,26 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: createAppBar('Details'),
+        appBar: AppBar(
+          textTheme: isDarkTheme ? darkTheme.textTheme : lightTheme.textTheme,
+          centerTitle: true,
+          actions: <Widget>[
+            FlatButton(
+              child: Icon(widget.isFavorite ? Icons.remove : Icons.add),
+              onPressed: toggleFavorite,
+            )
+          ],
+          title: Title(
+            color: isDarkTheme ? Color(0xff190e18) : Color(0xffced9d2),
+            child: Text(
+              "Details",
+              style: TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 20,
+              ),
+            ),
+          ),
+        ),
         body: ListView(
           scrollDirection: Axis.vertical,
           children: <Widget>[
@@ -171,7 +191,7 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
           ),
         ),
       );
-  
+
   Widget futureWidget() {
     return new FutureBuilder(
       future: fetchData(),
@@ -192,5 +212,21 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
           return new CircularProgressIndicator();
       },
     );
+  }
+
+  void toggleFavorite() {
+    if (widget.isFavorite) {
+      DbProvider.db.deleteFromFavoriteList(widget.code['symbol']);
+      setState(() {
+        widget.isFavorite = false;
+        print("click ${widget.isFavorite}");
+      });
+    } else {
+      DbProvider.db.addToFavoriteList(widget.code['symbol']);
+      setState(() {
+        widget.isFavorite = true;
+        print("click ${widget.isFavorite}");
+      });
+    }
   }
 }

@@ -81,7 +81,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                   ),
                 ],
                 favoriteData.map((f) {
-                  return StockWidget(f);
+                  return StockWidget(f,isFavorite: true,);
                 }).toList(),
                 [
                   Padding(
