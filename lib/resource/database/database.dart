@@ -1,16 +1,13 @@
 //Import library
-import 'dart:async';
+
 
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:io';
-import 'package:sqflite/sqlite_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 //Library written
-import './database_stock_exchange.dart';
-import './database_company_info.dart';
 import './database_symbol.dart';
 import './database_1m_chart.dart';
 import './database_1d_chart.dart';
@@ -28,37 +25,22 @@ class DbProvider {
     if (_database != null) {
       return _database;
     }
-    _database = await initDB();
-    await initializeDatabase();
+    _database = await _initDB();
+    await _initializeDatabase();
     var checkDb = await _database.query("Symbol",
         where: "symbol=?", whereArgs: ["alreadyBeenInitialize"]);
     if (checkDb.isEmpty)
       _database.insert("Symbol", {"symbol": "alreadyBeenInitialize"});
-    checkDb = await _database.query("StockExchange",
-        where: "mic=?", whereArgs: ["alreadyBeenInitialize"]);
-    if (checkDb.isEmpty)
-      _database.insert("StockExchange", {"mic": "alreadyBeenInitialize"});
     return _database;
   }
 
   //Ham goi khoi tao cho database
-  initializeDatabase() async {
-    await initializeAllStockExchange();
-    await initializeAllSymbol();
-  }
-
-  //Ham dung de debug khong su dung !!!
-  //Kiem tra xem table trong database da duoc tao chua
-  checkTableExist() async {
-    final db = await database;
-    var f = await db.rawQuery(
-        "SELECT * FROM sqlite_master WHERE name ='Symbol' and type='table'; ");
-    print("Check if table already existed");
-    print(f);
+  _initializeDatabase() async {
+    await _initializeAllSymbol();
   }
 
   //Ham khoi tao cho getter
-  initDB() async {
+  _initDB() async {
     print("Init DB");
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = documentsDirectory.path + 'my.db';
@@ -70,17 +52,6 @@ class DbProvider {
     }
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
-      await db.execute("CREATE TABLE IF NOT EXISTS StockExchange ("
-          "venueName TEXT,"
-          "mic TEXT,"
-          "tapeId TEXT,"
-          "volume TEXT,"
-          "tapeA TEXT,"
-          "tapeB TEXT,"
-          "tapeC TEXT,"
-          "marketPercent TEXT,"
-          "lastUpdated TEXT"
-          ")");
       await db.execute("CREATE TABLE IF NOT EXISTS Symbol ("
           "symbol TEXT,"
           "name TEXT,"
@@ -93,71 +64,8 @@ class DbProvider {
     });
   }
 
-  //Ham du phong, dung de cap nhat lai cho table StockExchange
-  updateAllStockExchange() async {
-    String urlJson = "https://api.iextrading.com/1.0/market";
-    http.Response jsonResponse = await http.get(urlJson);
-    List<DbStockExchange> listStockExchange =
-        dbStockExchangeFromJson(jsonResponse.body);
-    final db = await database;
-    for (var f in listStockExchange) {
-      if (f != null) {
-        var res = await db.update("StockExchange", f.toMap(),
-            where: "mic = ?", whereArgs: [f.mic]);
-      }
-    }
-  }
-
-  //Ham khoi tao cho table StockExchange
-  initializeAllStockExchange() async {
-    final db = await database;
-    List<Map<String, dynamic>> checkDb = await db.query("StockExchange",
-        where: "mic=?", whereArgs: ["alreadyBeenInitialize"]);
-    if (checkDb.isNotEmpty) {
-      print("Stock Exchange database already been initialized");
-      return null;
-    }
-    
-    print("Initialize Stock Exchange");
-    String urlJson = "https://api.iextrading.com/1.0/market";
-    try {
-      http.Response jsonResponse = await http.get(urlJson);
-      List<DbStockExchange> listStockExchange =
-          dbStockExchangeFromJson(jsonResponse.body);
-
-      for (var f in listStockExchange) {
-        if (f != null) {
-          var res = await db.insert("StockExchange", f.toMap());
-        }
-      }
-    } catch (e) {
-      throw "Cannot get data.";
-    }
-  }
-
-  //Ham du phong, dung de cap nhat cho table Symbol
-  updateAllSymbol() async {
-    String urlJson = "https://api.iextrading.com/1.0/ref-data/symbols";
-    try {
-      http.Response jsonResponse = await http.get(urlJson);
-      List<DbSymbol> listSymbols = dbSymbolFromJson(jsonResponse.body);
-      final db = await database;
-      for (var f in listSymbols) {
-        if (f != null) {
-          var res = await db.update("Symbol", f.toMap(),
-              where: "symbol = ?", whereArgs: [f.symbol]);
-          if (res == 0) {
-            await db.insert("Symbol", f.toMap());
-          }
-        }
-      }
-    } catch (e) {
-      throw "Cannot get data";
-    }
-  }
-
   //Ham khoi tao cho table Symbol
-  initializeAllSymbol() async {
+  _initializeAllSymbol() async {
     final db = await database;
     List<Map<String, dynamic>> checkDb = await db.query("Symbol",
         where: "symbol=?", whereArgs: ["alreadyBeenInitialize"]);
@@ -183,24 +91,6 @@ class DbProvider {
 
   //Tu day tro di la cac ham tra data ve
 
-  //Ham tra ve tat ca StockExchange ma API ho tro
-  //Map<String,dynamic> duoc tra ve co dang:
-  //{
-  //  //      "mic": mic,
-  //  //      "tapeId": tapeId,
-  //  //      "venueName": venueName,
-  //  //      "volume": volume,
-  //  //      "tapeA": tapeA,
-  //  //      "tapeB": tapeB,
-  //  //      "tapeC": tapeC,
-  //  //      "marketPercent": marketPercent,
-  //  //      "lastUpdated": lastUpdated
-  //  //    };
-  Future<List<Map<String, dynamic>>> getAllStockExchange() async {
-    final db = await database;
-    var res = await db.query("StockExchange");
-    return res.isEmpty ? null : res;
-  }
 
   //Ham dung tra ve tat ca symbols ma API ho tro
   //Map<String,dynamic> duoc tra ve co dang:
@@ -218,25 +108,6 @@ class DbProvider {
     return res.isEmpty ? null : res;
   }
 
-  //Ham tra ve thong tin cua san chung khoan (StockExchange), nhan vao ma san (mic)
-  //Map<String,dynamic> duoc tra ve co dang:
-  //{
-  //      "mic": mic,
-  //      "tapeId": tapeId,
-  //      "venueName": venueName,
-  //      "volume": volume,
-  //      "tapeA": tapeA,
-  //      "tapeB": tapeB,
-  //      "tapeC": tapeC,
-  //      "marketPercent": marketPercent,
-  //      "lastUpdated": lastUpdated
-  //    };
-  Future<List<Map<String, dynamic>>> searchStockExchange(String mic) async {
-    final db = await database;
-    var res =
-        await db.query("StockExchange", where: "mic= ?", whereArgs: [mic]);
-    return res.isNotEmpty ? res : null;
-  }
 
   //Ham dung de tim kiem thong tin symbols, nhan vao 1 chuoi ky tu
   //Ham se tim kiem trong database cac symbol co chua cac ky tu nhan vao
@@ -256,59 +127,6 @@ class DbProvider {
     return res.isNotEmpty ? res : null;
   }
 
-  //Ham dung de lay thong tin chi tiet ve cong ty dua vao symbol nhan vao
-  //Luu y: ham se chi tra ve thong tin chi tiet cua cong ty khi nhan vao symbol chinh xac
-  //Map<String,dynamic> duoc tra ve co dang
-  //{
-  //      "symbol": symbol,
-  //      "companyName": companyName,
-  //      "exchange": exchange,
-  //      "industry": industry,
-  //      "website": website,
-  //      "description": description,
-  //      "CEO": ceo,
-  //      "issueType": issueType,
-  //      "sector": sector,
-  //      "tag1": tags.length>1?tags[0]:null,
-  //      "tag2" : tags.length>2?tags[1]:null,
-  //      "tag3": tags.length>3?tags[2]:null
-  // };
-  Future<Map<String, dynamic>> getCompanyInfo(String symbol) async {
-    final db = await database;
-    await db.execute("CREATE TABLE IF NOT EXISTS CompanyInfo ("
-        "symbol TEXT,"
-        "companyName TEXT,"
-        "exchange TEXT,"
-        "industry TEXT,"
-        "website TEXT,"
-        "description TEXT,"
-        "ceo TEXT,"
-        "issueType TEXT,"
-        "sector TEXT,"
-        "tag1 TEXT,"
-        "tag2 TEXT,"
-        "tag3 TEXT"
-        ")");
-    String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/company";
-    var checkDb =
-        await db.query("CompanyInfo", where: "symbol=?", whereArgs: [symbol]);
-    if (checkDb.isEmpty) {
-      try {
-        http.Response jsonResponse = await http.get(urlJson);
-        if (jsonResponse.body.toLowerCase() == "unknown symbol") {
-          return null;
-        }
-        DbCompanyInfo info = dbCompanyInforFromJson(jsonResponse.body);
-        db.insert("CompanyInfo", info.toMapDatabase());
-        return info.toMapDatabase();
-      } catch (e) {
-        return null;
-      }
-    } else {
-      print("Company $symbol already in database");
-      return checkDb.first;
-    }
-  }
 
   //Ham tra ve thong tin chung khoan cua cong ty trong 1 thang
   //Luu y: Ham chi nhan vao chinh xac symbol
@@ -479,7 +297,7 @@ class DbProvider {
       } else {
         print("Have offline data");
         List<Map<String, dynamic>> chartData =
-        await db.query("${symbol.toUpperCase()}_chart_1d");
+            await db.query("${symbol.toUpperCase()}_chart_1d");
         print("Get database complete");
         for (var f in chartData) {
           print(f);
@@ -625,7 +443,7 @@ class DbProvider {
       } else {
         print("Have offline data");
         List<Map<String, dynamic>> chartData =
-        await db.query("${symbol.toUpperCase()}_chart_3c");
+            await db.query("${symbol.toUpperCase()}_chart_3c");
         print("Get database complete");
         for (var f in chartData) {
           print(f);
@@ -683,7 +501,8 @@ class DbProvider {
         "marketCap NUMBER,"
         "peRatio NUMBER"
         ")");
-    var checkDate=await db.query("RealTimeInfo",where: "symbol=?",whereArgs: [symbol.toUpperCase()]);
+    var checkDate = await db.query("RealTimeInfo",
+        where: "symbol=?", whereArgs: [symbol.toUpperCase()]);
     List<Map<String, dynamic>> checkSymbol =
         await db.query("Symbol", where: "symbol=?", whereArgs: [symbol]);
     if (checkSymbol.isEmpty) {
@@ -699,19 +518,21 @@ class DbProvider {
       print("Get data complete");
       DbQuote quote = dbQuoteFromJson(response.body);
       print("Trans Data complete");
-      if(checkDate.isNotEmpty)
-        await db.update("RealTimeInfo",quote.toMapRequired(),where: "symbol=?",whereArgs: [symbol.toUpperCase()]);
+      if (checkDate.isNotEmpty)
+        await db.update("RealTimeInfo", quote.toMapRequired(),
+            where: "symbol=?", whereArgs: [symbol.toUpperCase()]);
       else
-        await db.insert("RealTimeInfo",quote.toMapRequired());
+        await db.insert("RealTimeInfo", quote.toMapRequired());
       print("Add data to database complete");
       print(quote.toMapRequired());
       return quote.toMapRequired();
     } catch (e) {
-      if(checkDate.isEmpty){
+      if (checkDate.isEmpty) {
         print("Not have data available");
         return null;
       }
-      var data=await db.query("RealTimeInfo",where: "symbol=?",whereArgs: [symbol]);
+      var data = await db
+          .query("RealTimeInfo", where: "symbol=?", whereArgs: [symbol]);
       print(data);
       return data.first;
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:newproject/flutter_candlesticks.dart';
 import 'package:newproject/main.dart';
 import 'package:newproject/resource/database/database.dart';
@@ -187,7 +188,10 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
             labelPrefix: "",
           );
         } else if (snapshot.hasError) {
-          return new Text("Error");
+          return new Container(
+            child: new Text("This data is not available",style: TextStyle(fontSize: 20),),
+            alignment: Alignment.center,
+          );
         } else
           return new CircularProgressIndicator();
       },

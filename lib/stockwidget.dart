@@ -61,10 +61,10 @@ class StockWidget extends StatelessWidget {
                             Colors.lightGreen,
                             
                       ) : Icon(Icons.arrow_downward, color: Colors.red[200]),
-                      Text(code["changePercent"].toString(),
+                      Text(code["change"].toString(),
                           style: TextStyle(
                             fontFamily: 'Helvetica',
-                            color: code["changePercent"] > 0
+                            color: code["change"] > 0
                                 ? Colors.green
                                 : Colors.red,
                             fontSize: 12,

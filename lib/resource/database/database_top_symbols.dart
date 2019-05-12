@@ -6,8 +6,6 @@ import 'dart:convert';
 
 List<DbTopSymbols> dbTopSymbolsFromJson(String str) => new List<DbTopSymbols>.from(json.decode(str).map((x) => DbTopSymbols.fromMap(x)));
 
-String dbTopSymbolsToJson(List<DbTopSymbols> data) => json.encode(new List<dynamic>.from(data.map((x) => x.toMap())));
-
 class DbTopSymbols {
   String symbol;
   String companyName;
@@ -80,34 +78,4 @@ class DbTopSymbols {
   };
 }
 
-enum CalculationPrice { CLOSE }
 
-final calculationPriceValues = new EnumValues({
-  "close": CalculationPrice.CLOSE
-});
-
-enum LatestSource { CLOSE }
-
-final latestSourceValues = new EnumValues({
-  "Close": LatestSource.CLOSE
-});
-
-enum LatestTime { MAY_82019 }
-
-final latestTimeValues = new EnumValues({
-  "May 8, 2019": LatestTime.MAY_82019
-});
-
-class EnumValues<T> {
-  Map<String, T> map;
-  Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    if (reverseMap == null) {
-      reverseMap = map.map((k, v) => new MapEntry(v, k));
-    }
-    return reverseMap;
-  }
-}

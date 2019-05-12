@@ -9,11 +9,9 @@ bool isLogedIn = false;
 
 void main() async {
   top10data = await DbProvider.db.getTopSymbols();
-  await DbProvider.db.addToFavoriteList("AAPL");
-  await DbProvider.db.addToFavoriteList("GOOGL");
-  await DbProvider.db.addToFavoriteList("TSLA");
   favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
-  favoriteSymbol.forEach((f) async {favoriteData.add(await DbProvider.db.getRealTimeInfo(f));});
+  if(favoriteSymbol!=null) favoriteSymbol.forEach((f) async {favoriteData.add(await DbProvider.db.getRealTimeInfo(f));});
+  else favoriteSymbol=[];
   runApp(MyApp());
 }
 
