@@ -10,8 +10,12 @@ bool isLogedIn = false;
 void main() async {
   top10data = await DbProvider.db.getTopSymbols();
   favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
-  if(favoriteSymbol!=null) favoriteSymbol.forEach((f) async {favoriteData.add(await DbProvider.db.getRealTimeInfo(f));});
-  else favoriteSymbol=[];
+  if (favoriteSymbol != null)
+    favoriteSymbol.forEach((f) async {
+      favoriteData.add(await DbProvider.db.getRealTimeInfo(f));
+    });
+  else
+    favoriteSymbol = [];
   runApp(MyApp());
 }
 
@@ -67,7 +71,7 @@ class _MyAppState extends State<MyApp> {
         home: LoginScreen(),
         routes: <String, WidgetBuilder>{
           '/home': (context) => MyHomeScreen(),
-          '/login': (context) => LoginScreen(),          
+          '/login': (context) => LoginScreen(),
           '/setting': (context) => SettingScreen(toggleTheme),
         });
   }

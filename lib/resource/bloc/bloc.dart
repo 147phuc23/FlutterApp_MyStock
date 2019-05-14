@@ -12,7 +12,7 @@ class AuthBloc {
 
   bool isValidInfo(String usr, String pwd) {
     return true;
-    if (!AccountValidation.isValidUserName(usr)) {
+    if (!AccountValidation.isValidUsername(usr)) {
       _userController.sink.addError("Tên đăng nhập không hợp lệ!");
       return false;
     }
@@ -50,6 +50,6 @@ class SearchBloc {
 }
 
 class AccountValidation {
-  static bool isValidUserName(String usrname) => usrname.length > 6;
+  static bool isValidUsername(String usrname) => usrname.length > 6;
   static bool isValidPassword(String pwd) => pwd.length > 6;
 }

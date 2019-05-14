@@ -8,7 +8,6 @@ class ScreenAccount extends StatefulWidget {
 }
 
 class _ScreenAccountState extends State<ScreenAccount> {
-  TextEditingController textEditingController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

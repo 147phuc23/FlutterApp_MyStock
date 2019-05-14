@@ -54,7 +54,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
     );
   }
 
-  ThemeData appBarTheme(BuildContext context) {
+  ThemeData createAppBarTheme(BuildContext context) {
     assert(context != null);
     final ThemeData theme = Theme.of(context);
     assert(theme != null);
@@ -81,7 +81,10 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                   ),
                 ],
                 favoriteData.map((f) {
-                  return StockWidget(f,isFavorite: true,);
+                  return StockWidget(
+                    f,
+                    isFavorite: true,
+                  );
                 }).toList(),
                 [
                   Padding(
@@ -116,7 +119,16 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
       ),
       onRefresh: () async {
         top10data = await DbProvider.db.getTopSymbols();
-        setState(() {});
+        favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
+        favoriteData = [];
+        if (favoriteSymbol != null)
+          await favoriteSymbol.forEach((f) async {
+            favoriteData.add(await DbProvider.db.getRealTimeInfo(f));
+            setState(() {});
+          });
+        else
+          favoriteSymbol = [];
+        
       },
     );
   }

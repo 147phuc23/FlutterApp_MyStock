@@ -20,7 +20,7 @@ class StockWidget extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => InforDetailScreen(code,isFavorite: this.isFavorite),
+                            builder: (context) => InforDetailsScreen(code,isFavorite: this.isFavorite),
                           ));
                     },
                     child: Column(

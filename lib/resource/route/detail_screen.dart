@@ -4,16 +4,16 @@ import 'package:newproject/flutter_candlesticks.dart';
 import 'package:newproject/main.dart';
 import 'package:newproject/resource/database/database.dart';
 
-class InforDetailScreen extends StatefulWidget {
+class InforDetailsScreen extends StatefulWidget {
   final code;
   bool isFavorite;
   List sampleData = [];
-  InforDetailScreen(this.code, {this.isFavorite = false});
+  InforDetailsScreen(this.code, {this.isFavorite = false});
   @override
-  _InforDetailScreenState createState() => _InforDetailScreenState();
+  _InforDetailsScreenState createState() => _InforDetailsScreenState();
 }
 
-class _InforDetailScreenState extends State<InforDetailScreen> {
+class _InforDetailsScreenState extends State<InforDetailsScreen> {
   String _graphMode = "1 month";
 
   Future<double> fetchData() async {
@@ -218,15 +218,15 @@ class _InforDetailScreenState extends State<InforDetailScreen> {
     );
   }
 
-  void toggleFavorite() {
+  void toggleFavorite() async {
     if (widget.isFavorite) {
-      DbProvider.db.deleteFromFavoriteList(widget.code['symbol']);
+      await DbProvider.db.deleteFromFavoriteList(widget.code['symbol']);
       setState(() {
         widget.isFavorite = false;
         print("click ${widget.isFavorite}");
       });
     } else {
-      DbProvider.db.addToFavoriteList(widget.code['symbol']);
+      await DbProvider.db.addToFavoriteList(widget.code['symbol']);
       setState(() {
         widget.isFavorite = true;
         print("click ${widget.isFavorite}");

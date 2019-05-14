@@ -55,7 +55,7 @@ class CodeSearch extends SearchDelegate<Map> {
                 onTap: () async {
                   result = await fetchData(result["symbol"]);
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => InforDetailScreen(result)));
+                      builder: (context) => InforDetailsScreen(result)));
                 },
                 child: ListTile(
                   title: Text(result['symbol']),
