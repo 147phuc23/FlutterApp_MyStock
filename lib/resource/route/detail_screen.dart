@@ -126,18 +126,18 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text('Open: ${widget.code['open']}'),
-                      Text('High: ${widget.code['high']}'),
-                      Text('Low: ${widget.code['low']}'),
+                      Text(widget.code['open']==null?'':'Open: ${widget.code['open']}'),
+                      Text(widget.code['high']==null?'':'High: ${widget.code['high']}'),
+                      Text(widget.code['low']==null?'':'Low: ${widget.code['low']}'),
                     ],
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                   Column(
                     children: <Widget>[
-                      Text('Close: ${widget.code['close']}'),
-                      Text('Mkt Cap: ${widget.code['marketCap']}'),
-                      Text('P/E ratio: ${widget.code['peRatio']}'),
+                      Text(widget.code['close']==null?'':'Close: ${widget.code['close']}'),
+                      Text(widget.code['marketCap']==null?'':'Mkt Cap: ${widget.code['marketCap']}'),
+                      Text(widget.code['peRatio']==null?"":'P/E ratio: ${widget.code['peRatio']}'),
                     ],
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
