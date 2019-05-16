@@ -31,7 +31,6 @@ class AuthBloc {
     isValidAccount(usr, pwd);
     if (isValidAccount(usr, pwd)) logedInAccount = new Account(usr, pwd);
     return isValidAccount(usr, pwd);
-    ;
   }
 
   isValidAccount(usr, pwd) async {
@@ -63,7 +62,7 @@ class AuthBloc {
       _userController.sink.addError("Tên đăng nhập đã tồn tại!");
       return false;
     }
-    ;
+    
   }
 
   isValidInfoSignUpAccount(usr, pwd) async {
