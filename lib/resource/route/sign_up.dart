@@ -84,6 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Account newAccount = new  Account(_usernameTextController.text,_passwordTextController.text);
       newAccount.name =  _nameTextController.text;
       Navigator.of(context).pushReplacementNamed('/home');
+      context.ancestorInheritedElementForWidgetOfExactType(MyHomeScreen).rebuild();
       logedInAccount = newAccount;
       isLoggedIn = true;
     }

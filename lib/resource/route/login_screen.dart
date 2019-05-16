@@ -1,4 +1,5 @@
 import 'package:MyStock/resource/bloc/bloc.dart';
+import 'package:MyStock/resource/route/home_page.dart';
 import 'package:MyStock/resource/route/sign_up.dart';
 import 'package:flutter/material.dart';
 
@@ -16,9 +17,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onSubmit() async {
     if (await authBloc.isValidInfoSignIn(_userTextController.text,
-        _passTextController.text)) if (Navigator.of(context).canPop())
+        _passTextController.text)) if (Navigator.of(context).canPop()) {
       Navigator.pushReplacementNamed(context, '/home');
-    else
+      context.ancestorInheritedElementForWidgetOfExactType(MyHomeScreen).rebuild();
+    } else
       Navigator.of(context).pushNamed('/home');
     isLoggedIn = true;
   }
