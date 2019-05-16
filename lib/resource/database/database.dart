@@ -63,7 +63,7 @@ class DbProvider {
           "type TEXT,"
           "iexId TEXT"
           ")");
-      await db.execute("CREATE TABLE IF NOT EXISTS  FavoriteList(symbol TEXT)");
+      await db.execute("CREATE TABLE IF NOT EXISTS  FavoriteList(symbol TEXT,username TEXT)");
     });
   }
 
@@ -90,6 +90,7 @@ class DbProvider {
     } catch (e) {
       throw "Cannot get data.";
     }
+    print("Finish Initialize Symbol");
   }
 
   //Tu day tro di la cac ham tra data ve
@@ -191,7 +192,7 @@ class DbProvider {
       }
       await db
           .insert("${symbol.toUpperCase()}_chart_1m", {"label": "haveData"});
-      return chartMap.isNotEmpty ? chartMap : [];
+      return chartMap.isNotEmpty ? chartMap : null;
     } catch (e) {
       print("Catch error");
       if (checkDate.isEmpty) {
@@ -221,7 +222,7 @@ class DbProvider {
         }
         chartDataInRequired.removeLast();
         print("Prepared to return data");
-        return chartDataInRequired;
+        return chartDataInRequired.isEmpty?null:chartDataInRequired;
       }
     }
   }
@@ -292,7 +293,7 @@ class DbProvider {
       }
       await db
           .insert("${symbol.toUpperCase()}_chart_1d", {"label": "haveData"});
-      return chartMap.isNotEmpty ? chartMap : [];
+      return chartMap.isNotEmpty ? chartMap : null;
     } catch (e) {
       print("Catch error");
       if (checkDate.isEmpty) {
@@ -322,7 +323,7 @@ class DbProvider {
         }
         chartDataInRequired.removeLast();
         print("Prepared to return data");
-        return chartDataInRequired;
+        return chartDataInRequired.isEmpty?null:chartDataInRequired;
       }
     }
   }
@@ -673,8 +674,11 @@ class DbProvider {
   //Ham dung de them vao favorite list
   //Ham se tra ve true neu them vao thanh cong hoac symbol da co trong list
   //Tra ve false neu symbol khong duoc ho tro hoac khong co trong list symbol lay tu API
-  Future<bool> addToFavoriteList(String symbol) async {
+  Future<bool> addToFavoriteList(String symbol,String username) async {
     var db = await database;
+    print("Get database complete");
+    var checkAccount=await db.query("FavoriteList",where: "username=?",whereArgs: [username]);
+    print("Check account complete");
     var checkSupported =
         await db.query("Symbol", where: "symbol=?", whereArgs: [symbol]);
     if (checkSupported.isEmpty) {
@@ -684,27 +688,72 @@ class DbProvider {
         return false;
       }
     }
+    print("Check supported comnplete");
     var checkDb =
-        await db.query("FavoriteList", where: "symbol=?", whereArgs: [symbol]);
+        await db.query("FavoriteList", where: "symbol=? AND username=?", whereArgs: [symbol,username]);
+    if(checkDb.isNotEmpty) print((await db.query("FavoriteList")).first);
+    if (checkDb.isNotEmpty) {
+      return true;
+    } else {
+      await db.insert("FavoriteList", {"symbol": symbol,"username":username});
+      return true;
+    }
+  }
+
+/*  Future<bool> addToFavoriteList(String symbol) async {
+    var db = await database;
+    var checkSupported =
+    await db.query("Symbol", where: "symbol=?", whereArgs: [symbol]);
+    if (checkSupported.isEmpty) {
+      return false;
+    } else {
+      if (checkSupported.first["isEnabled"] == "0") {
+        return false;
+      }
+    }
+    var checkDb =
+    await db.query("FavoriteList", where: "symbol=?", whereArgs: [symbol]);
     if (checkDb.isNotEmpty) {
       return true;
     } else {
       await db.insert("FavoriteList", {"symbol": symbol});
       return true;
     }
-  }
+  }*/
 
   //Ham dung de xoa 1 symbol ra khoi FavoriteList
   //Ham se tra ve true neu xoa thanh cong
-  Future<bool> deleteFromFavoriteList(String symbol) async {
+  Future<bool> deleteFromFavoriteList(String symbol,String username) async {
+    var db = await database;
+    await db.delete("FavoriteList", where: "symbol=? AND username=?", whereArgs: [symbol,username]);
+    return true;
+  }
+/*  Future<bool> deleteFromFavoriteList(String symbol) async {
     var db = await database;
     await db.delete("FavoriteList", where: "symbol=?", whereArgs: [symbol]);
     return true;
-  }
+  }*/
 
   //Ham dung de lay tat ca cac symbnol dang co trong Favorite List
   //Ham se tra ve List<String> cac symbol hoac tr ve null neo ko co symbol nao
-  Future<List<String>> getSymbolFromFavoriteList() async {
+  Future<List<String>> getSymbolFromFavoriteList(String username) async {
+    var db = await database;
+    var data = await db.query("FavoriteList",where: "username=?",whereArgs: [username]);
+    print("getSymbolFromFavoriteList_fix::query complete");
+    if (data.isEmpty) {
+      print("User not have in database");
+      return null;
+    } else {
+      List<String> returnData = [];
+      for (var f in data) {
+        returnData.add(f["symbol"]);
+      }
+      print("getSymbolFromFavoriteList_fix::Done get symbol");
+      return returnData;
+    }
+  }
+
+/*  Future<List<String>> getSymbolFromFavoriteList() async {
     var db = await database;
     var data = await db.query("FavoriteList");
     if (data.isEmpty) {
@@ -714,16 +763,24 @@ class DbProvider {
       for (var f in data) {
         returnData.add(f["symbol"]);
       }
+      print("get symbol from favorite list done");
       return returnData;
     }
+  }*/
+
+  Future<bool> checkIfSymbolIsFavorite(String symbol,String username)async{
+    var db=await database;
+    var data = await db.query("FavoriteList",where: "symbol=? AND username=?",whereArgs: [symbol,username]);
+    if(data.isNotEmpty) return true;
+    else return false;
   }
 
-  Future<bool> checkIfSymbolIsFavorite(String symbol)async{
+/*  Future<bool> checkIfSymbolIsFavorite(String symbol)async{
     var db=await database;
     var data = await db.query("FavoriteList",where: "symbol=?",whereArgs: [symbol]);
     if(data.isNotEmpty) return true;
     else return false;
-  }
+  }*/
 
   Future<bool> writeAccountInfo(String username,String password)async{
     var db = await database;
@@ -735,10 +792,13 @@ class DbProvider {
       var check=await db.query("AccountInfo",where:"username=?",whereArgs:[username] );
       if(check.isNotEmpty)return true;
       else{
+        password=Password.hash(password, new PBKDF2());
+        print(password);
         await db.insert("AccountInfo", {"username":username,"password":password});
         return true;
       }
     }catch(e){
+      print("writeAccountInfo::error catched");
       return false;
     }
   }
@@ -749,9 +809,10 @@ class DbProvider {
       var check=await db.query("AccountInfo",where:"username=?",whereArgs:[username] );
       if(check.isEmpty) return false;
       else{
-        return check.first["password"]==password;
+        return Password.verify(password,check.first["password"]);
       }
     }catch(e){
+      print("writeAccountInfo::error catched");
       return false;
     }
   }

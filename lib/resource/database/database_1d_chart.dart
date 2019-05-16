@@ -39,7 +39,7 @@ class DbChart1D {
     high: json["high"]==null?null:json["high"].toDouble(),
     low: json["low"]==null?null:json["low"].toDouble(),
     average: json["average"]==null?null:json["average"].toDouble(),
-    volume: json["volume"],
+    volume: json["volume"]==null?null:json["volume"].toInt(),
     open: json["open"]==null?null:json["open"].toDouble(),
     close: json["close"]==null?null:json["close"].toDouble(),
     changeOverTime: json["changeOverTime"]==null?null:json["changeOverTime"].toDouble(),

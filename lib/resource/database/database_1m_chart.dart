@@ -37,13 +37,13 @@ class DbChart1M {
   });
 
   factory DbChart1M.fromMap(Map<String, dynamic> json) => new DbChart1M(
-    date: DateTime.parse(json["date"]),
+    date: json["date"]==null?null:DateTime.parse(json["date"]),
     open: json["open"]==null?null:json["open"].toDouble(),
     high: json["high"]==null?null:json["high"].toDouble(),
     low: json["low"]==null?null:json["low"].toDouble(),
     close: json["close"]==null?null:json["close"].toDouble(),
-    volume: json["volume"],
-    unadjustedVolume: json["unadjustedVolume"],
+    volume: json["volume"]==null?null:json["volume"].toInt(),
+    unadjustedVolume: json["unadjustedVolume"]==null?null:json["unadjustedVolume"].toInt(),
     change: json["change"]==null?null:json["change"].toDouble(),
     changePercent: json["changePercent"]==null?null:json["changePercent"].toDouble(),
     vwap: json["vwap"]==null?null:json["vwap"].toDouble(),
