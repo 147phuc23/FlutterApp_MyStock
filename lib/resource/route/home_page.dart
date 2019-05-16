@@ -96,7 +96,13 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                   ),
                 ],
                 top10data.map((f) {
-                  return StockWidget(f);
+                  var data=favoriteData.firstWhere((item)=>item["symbol"]==f["symbol"],orElse: ()=>null);
+                  if(data==null){
+                    return StockWidget(f);
+                  }else{
+                    return StockWidget(f,isFavorite: true,);
+                  }
+
                 }).toList(),
                 favoriteData.map((f) {
                   return Text(f['symbol']);
@@ -119,16 +125,17 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
       ),
       onRefresh: () async {
         top10data = await DbProvider.db.getTopSymbols();
-        favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
-        favoriteData = [];
-        if (favoriteSymbol != null)
-          await favoriteSymbol.forEach((f) async {
-            favoriteData.add(await DbProvider.db.getRealTimeInfo(f));
-            setState(() {});
-          });
+        List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
+        favoriteData=[];
+        if (favoriteSymbol != null) {
+          var listRealInfo=await DbProvider.db.getListRealInfo(favoriteSymbol);
+          for(var f in listRealInfo){
+            favoriteData.add(f);
+          }
+        }
         else
           favoriteSymbol = [];
-        
+        setState(() {});
       },
     );
   }

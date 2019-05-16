@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 //Library written
 import './database_symbol.dart';
@@ -515,29 +516,92 @@ class DbProvider {
     String urlJson = "https://api.iextrading.com/1.0/stock/$symbol/quote";
     try {
       http.Response response = await http.get(urlJson);
-      print("Get data complete");
+      print("getRealTimeInfo::Get data complete");
       DbQuote quote = dbQuoteFromJson(response.body);
-      print("Trans Data complete");
+      print("getRealTimeInfo::Trans Data complete");
       if (checkDate.isNotEmpty)
         await db.update("RealTimeInfo", quote.toMapRequired(),
             where: "symbol=?", whereArgs: [symbol.toUpperCase()]);
       else
         await db.insert("RealTimeInfo", quote.toMapRequired());
-      print("Add data to database complete");
-      print(quote.toMapRequired());
+      print("getRealTimeInfo::Add data to database complete");
       return quote.toMapRequired();
     } catch (e) {
       if (checkDate.isEmpty) {
-        print("Not have data available");
+        print("getRealTimeInfo::Not have data available");
         return null;
       }
       var data = await db
           .query("RealTimeInfo", where: "symbol=?", whereArgs: [symbol]);
-      print(data);
       return data.first;
     }
   }
 
+
+  Future<List<Map<String,dynamic>>> getListRealInfo(List<String> symbol)async{
+    var db = await database;
+    await db.execute("CREATE TABLE IF NOT EXISTS RealTimeInfo("
+        "symbol TEXT,"
+        "companyName TEXT,"
+        "sector TEXT,"
+        "primaryExchange TEXT,"
+        "open NUMBER,"
+        "close NUMBER,"
+        "high NUMBER,"
+        "low NUMBER,"
+        "latestPrice NUMBER,"
+        "latestSource TEXT,"
+        "previousClose NUMBER,"
+        "change NUMBER,"
+        "changePercent NUMBER,"
+        "marketCap NUMBER,"
+        "peRatio NUMBER"
+        ")");
+    List<Map<String,dynamic>> checkDate=[];
+    for(var f in symbol){
+      var check = await db.query("RealTimeInfo",
+          where: "symbol=?", whereArgs: [f.toUpperCase()]);
+      if(check.isNotEmpty)
+        checkDate.add(check.first);
+    }
+    List<Map<String,dynamic>> listReturnedData=[];
+    String urlJson = "https://api.iextrading.com/1.0/stock/market/batch?symbols=${symbol.join(',')}&types=quote";
+    print(urlJson);
+    try {
+      http.Response response = await http.get(urlJson);
+      print("Get data complete");
+      var decodeData=jsonDecode(response.body);
+      List<Map<String,dynamic>> transData=[];
+      List<DbQuote> listDataCompany=[];
+      for(var f in symbol){
+        transData.add(decodeData[f]['quote']);
+      }
+      if(transData.isNotEmpty) print("getListRealTimeInfo::Is not empty");
+      for(var f in transData){
+        DbQuote quote = DbQuote.fromMap(f);
+        print("getListRealTimeInfo::${quote.toMapRequired()}");
+        listDataCompany.add(quote);
+      }
+      print("getListRealTimeInfo::Trans Data complete");
+      for(var f in listDataCompany){
+        if (checkDate.where((item)=>item['symbol']==f.symbol)!=null)
+          await db.update("RealTimeInfo", f.toMapRequired(),
+              where: "symbol=?", whereArgs: [f.symbol.toUpperCase()]);
+        else
+          await db.insert("RealTimeInfo", f.toMapRequired());
+        print("Add data to database complete");
+        listReturnedData.add(f.toMapRequired());
+      }
+      return listReturnedData;
+    } catch (e) {
+      print(e);
+      if (checkDate.isEmpty) {
+        print("Not have data available");
+        return [];
+      }
+      return checkDate;
+    }
+  }
   //Ham tra ve top 10 symbols hoat dong manh nhat
   //Map tra ve:{{
   //    "symbol": symbol,
