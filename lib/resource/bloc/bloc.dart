@@ -21,13 +21,22 @@ class AuthBloc {
       _passController.sink.addError("Mật khẩu không hợp lệ!");
       return false;
     }
-    bool x = false;
-    accountList.forEach((f) {
-      if (f.username == usr) if (f.password == pwd) {
-        x = true;
-      }
-    });
-    return x;
+    // bool x = false;
+    // accountList.forEach((f) {
+    //   if (f.username == usr) if (f.password == pwd) {
+    //     x = true;
+    //   }
+    // });
+    // return x;
+    isValidAccount(usr, pwd);
+    if (isValidAccount(usr, pwd)) logedInAccount = new Account(usr, pwd);
+    return isValidAccount(usr, pwd);
+    ;
+  }
+
+  isValidAccount(usr, pwd) async {
+    bool valid = await DbProvider.db.checkAccountInfo(usr, pwd);
+    return valid;
   }
 
   bool isValidInfoSignUp(String usr, String pwd) {
@@ -39,15 +48,27 @@ class AuthBloc {
       _passController.sink.addError("Mật khẩu không hợp lệ!");
       return false;
     }
-    bool x = true;
-    accountList.forEach((f) {
-      if (f.username == usr) {
-        x = false;
-        logedInAccount = f;
-        _userController.sink.addError("Tên đăng nhập đã tồn tại!");
-      }
-    });
-    return x;
+    // bool x = true;
+    // accountList.forEach((f) {
+    //   if (f.username == usr) {
+    //     x = false;
+    //     logedInAccount = f;
+    //     _userController.sink.addError("Tên đăng nhập đã tồn tại!");
+    //   }
+    // // });
+    // return x;
+    if (isValidInfoSignUpAccount(usr, pwd))
+      return true;
+    else {
+      _userController.sink.addError("Tên đăng nhập đã tồn tại!");
+      return false;
+    }
+    ;
+  }
+
+  isValidInfoSignUpAccount(usr, pwd) async {
+    bool valid = await DbProvider.db.writeAccountInfo(usr, pwd);
+    return valid;
   }
 
   void dispose() {

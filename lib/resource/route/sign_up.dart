@@ -82,10 +82,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _usernameTextController.text, _passwordTextController.text)) {
       Account newAccount = new  Account(_usernameTextController.text,_passwordTextController.text);
       newAccount.name =  _nameTextController.text;
-      accountList.add(newAccount);
       Navigator.of(context).pushReplacementNamed('/home');
       logedInAccount = newAccount;
-      isLogedIn = true;
+      isLoggedIn = true;
     }
   }
 }

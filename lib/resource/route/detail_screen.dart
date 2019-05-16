@@ -49,7 +49,7 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
 
   Future<int> checkFavorite() async {
     var check =
-        await DbProvider.db.checkIfSymbolIsFavorite(widget.code["symbol"]);
+        await DbProvider.db.checkIfSymbolIsFavorite(widget.code["symbol"],logedInAccount.username);
     if (check)
       widget.isFavorite = true;
     else
@@ -63,7 +63,7 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
         appBar: AppBar(
           textTheme: isDarkTheme ? darkTheme.textTheme : lightTheme.textTheme,
           centerTitle: true,
-          actions: isLogedIn
+          actions: isLoggedIn
               ? <Widget>[
                   FlatButton(
                     child: futureFavoriteButton(),
@@ -289,13 +289,13 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
 
   void toggleFavorite() async {
     if (widget.isFavorite) {
-      await DbProvider.db.deleteFromFavoriteList(widget.code['symbol']);
+      await DbProvider.db.deleteFromFavoriteList(widget.code['symbol'],logedInAccount.username);
       setState(() {
         widget.isFavorite = false;
         print("click ${widget.isFavorite}");
       });
     } else {
-      await DbProvider.db.addToFavoriteList(widget.code['symbol']);
+      await DbProvider.db.addToFavoriteList(widget.code['symbol'],logedInAccount.username);
       setState(() {
         widget.isFavorite = true;
         print("click ${widget.isFavorite}");

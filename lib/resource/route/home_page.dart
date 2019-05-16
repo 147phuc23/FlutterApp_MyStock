@@ -69,7 +69,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   buildListView() {
     return RefreshIndicator(
       child: ListView(
-        children: isLogedIn
+        children: isLoggedIn
             ? [
                 [
                   Padding(
@@ -125,7 +125,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
       ),
       onRefresh: () async {
         top10data = await DbProvider.db.getTopSymbols();
-        List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
+        List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList(logedInAccount.username);
         favoriteData=[];
         if (favoriteSymbol != null) {
           var listRealInfo=await DbProvider.db.getListRealInfo(favoriteSymbol);

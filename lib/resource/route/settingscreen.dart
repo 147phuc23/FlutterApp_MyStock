@@ -42,7 +42,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
             ),
           ),
-          isLogedIn ? Container(
+          isLoggedIn ? Container(
             margin: EdgeInsets.all(10),
             child: ListTile(
               title: Text('Account'),

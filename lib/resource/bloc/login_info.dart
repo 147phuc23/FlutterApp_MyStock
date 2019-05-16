@@ -8,7 +8,3 @@ class Account {
   List favoriteList;
   String name;
 }
-
-List<Account> accountList = [
-  Account("aaaaaa","aaaaaa"),
-];

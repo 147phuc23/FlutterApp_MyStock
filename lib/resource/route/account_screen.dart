@@ -57,7 +57,7 @@ class _ScreenAccountState extends State<ScreenAccount> {
                 child: FlatButton(
                   onPressed: () {
                     logedInAccount = null; 
-                    isLogedIn = false;  
+                    isLoggedIn = false;  
                     Navigator.pop(context);
                     Navigator.pop(context);
                     Navigator.pop(context);                    

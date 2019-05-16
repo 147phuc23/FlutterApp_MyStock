@@ -18,12 +18,12 @@ class _LoginScreenState extends State<LoginScreen> {
     if (authBloc.isValidInfoSignIn(
         _userTextController.text, _passTextController.text))
       Navigator.pushReplacementNamed(context, '/home');
-    isLogedIn = true;
+    isLoggedIn = true;
   }
 
   void _onSubmitAsGuest() {
     Navigator.pushReplacementNamed(context, '/home');
-    isLogedIn = false;
+    isLoggedIn = false;
   }
 
   @override

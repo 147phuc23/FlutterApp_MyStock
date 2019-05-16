@@ -8,7 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'resource/bloc/login_info.dart';
 
-bool isLogedIn = false;
+bool isLoggedIn = false;
 Account logedInAccount;
 void main() async {
   runApp(MyApp());
@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
 
 Future<int> loadData() async {
   top10data = await DbProvider.db.getTopSymbols();
-  List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
+  if (isLoggedIn )List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList(logedInAccount.username);
   if (favoriteSymbol != null) {
     var listRealInfo = await DbProvider.db.getListRealInfo(favoriteSymbol);
     for (var f in listRealInfo) {
