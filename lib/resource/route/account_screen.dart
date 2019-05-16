@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:MyStock/main.dart';
 import 'package:MyStock/resource/route/login_screen.dart';
+import 'package:MyStock/resource/bloc/login_info.dart';
+import 'package:MyStock/main.dart';
 
 class ScreenAccount extends StatefulWidget {
   @override
@@ -36,14 +38,14 @@ class _ScreenAccountState extends State<ScreenAccount> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Đặng Hoàng Phúc",
+                            logedInAccount.username,
                             style: TextStyle(fontSize: 20),
                           ),
                           SizedBox(height: 15),
-                          Text(
+/*                          Text(
                             "Administator",
                             style: TextStyle(fontSize: 15),
-                          )
+                          )*/
                         ]),
                   ),
                 )

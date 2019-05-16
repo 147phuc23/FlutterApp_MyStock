@@ -1,8 +1,26 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:MyStock/flutter_candlesticks.dart';
 import 'package:MyStock/main.dart';
 import 'package:MyStock/resource/database/database.dart';
+
+class NullInfo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: Scaffold(
+      body: Container(
+        child: Text(
+          "This data is not available",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 50, color: Colors.black),
+        ),
+        alignment: Alignment.center,
+      ),
+    ));
+  }
+}
 
 class InforDetailsScreen extends StatefulWidget {
   final code;
@@ -45,12 +63,14 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
         appBar: AppBar(
           textTheme: isDarkTheme ? darkTheme.textTheme : lightTheme.textTheme,
           centerTitle: true,
-          actions: isLogedIn ? <Widget>[
-            FlatButton(
-              child: futureFavoriteButton(),
-              onPressed: toggleFavorite,
-            )
-          ]: <Widget>[],
+          actions: isLogedIn
+              ? <Widget>[
+                  FlatButton(
+                    child: futureFavoriteButton(),
+                    onPressed: toggleFavorite,
+                  )
+                ]
+              : <Widget>[],
           title: Title(
             color: isDarkTheme ? Color(0xff190e18) : Color(0xffced9d2),
             child: Text(
@@ -219,15 +239,24 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
       future: fetchData(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return OHLCVGraph(
-            data: widget.sampleData,
-            enableGridLines: true,
-            volumeProp: 0.2,
-            lineWidth: 0.5,
-            decreaseColor: Colors.redAccent,
-            increaseColor: Colors.purple,
-            labelPrefix: "",
-          );
+          if (widget.sampleData == null) {
+            return new Container(
+              child: new Text(
+                "This data is not available",
+                style: TextStyle(fontSize: 20),
+              ),
+              alignment: Alignment.center,
+            );
+          } else
+            return OHLCVGraph(
+              data: widget.sampleData,
+              enableGridLines: true,
+              volumeProp: 0.2,
+              lineWidth: 0.5,
+              decreaseColor: Colors.redAccent,
+              increaseColor: Colors.purple,
+              labelPrefix: "",
+            );
         } else if (snapshot.hasError) {
           return new Container(
             child: new Text(
@@ -251,7 +280,7 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
             return Icon(Icons.remove);
           else
             return Icon(Icons.add);
-        } else{
+        } else {
           return Icon(Icons.add);
         }
       },

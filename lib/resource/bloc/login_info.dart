@@ -7,7 +7,6 @@ class Account {
   Account(@required this.username ,@required this.password, {this.favoriteList});
   List favoriteList;
   String name;
-
 }
 
 List<Account> accountList = [

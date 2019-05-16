@@ -53,8 +53,13 @@ class CodeSearch extends SearchDelegate<Map> {
               return GestureDetector(
                 onTap: () async {
                   result = await fetchData(result["symbol"]);
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => InforDetailsScreen(result)));
+                  if(result!=null) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => InforDetailsScreen(result)));
+                  }else{
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => NullInfo()));
+                  }
                 },
                 child: ListTile(
                   title: Text(result['symbol']),

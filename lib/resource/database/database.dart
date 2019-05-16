@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'package:password/password.dart';
 
 //Library written
 import './database_symbol.dart';
@@ -723,5 +724,38 @@ class DbProvider {
     if(data.isNotEmpty) return true;
     else return false;
   }
+
+  Future<bool> writeAccountInfo(String username,String password)async{
+    var db = await database;
+    try{
+      await db.execute("CREATE TABLE IF NOT EXISTS AccountInfo ("
+          "username TEXT,"
+          "password TEXT"
+          ")");
+      var check=await db.query("AccountInfo",where:"username=?",whereArgs:[username] );
+      if(check.isNotEmpty)return true;
+      else{
+        await db.insert("AccountInfo", {"username":username,"password":password});
+        return true;
+      }
+    }catch(e){
+      return false;
+    }
+  }
+
+  Future<bool> checkAccountInfo(String username,String password)async{
+    var db = await database;
+    try{
+      var check=await db.query("AccountInfo",where:"username=?",whereArgs:[username] );
+      if(check.isEmpty) return false;
+      else{
+        return check.first["password"]==password;
+      }
+    }catch(e){
+      return false;
+    }
+  }
+
+
   //End DbProvider Class
 }

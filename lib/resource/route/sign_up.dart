@@ -1,5 +1,6 @@
 import 'package:MyStock/resource/bloc/bloc.dart';
 import 'package:MyStock/resource/bloc/login_info.dart';
+import 'package:MyStock/resource/database/database.dart';
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
