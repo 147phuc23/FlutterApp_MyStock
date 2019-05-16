@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:newproject/main.dart';
-import 'package:newproject/resource/route/account_screen.dart';
-import 'package:newproject/resource/route/login_screen.dart';
+import 'package:MyStock/main.dart';
+import 'package:MyStock/resource/route/account_screen.dart';
+import 'package:MyStock/resource/route/login_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   SettingScreen(this.toggleTheme);
@@ -20,7 +20,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(        
         appBar: createAppBar('Setting'),
         body: ListView(children: <Widget>[
-          Container(
+/*          Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
             margin: EdgeInsets.all(10),
             child: ListTile(
@@ -31,7 +31,7 @@ class _SettingScreenState extends State<SettingScreen> {
               title: Text('Notification'),
               enabled: true,
             ),
-          ),
+          ),*/
           Container(
             margin: EdgeInsets.all(10),
             child: ListTile(

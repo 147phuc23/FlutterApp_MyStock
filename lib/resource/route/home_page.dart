@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:newproject/demodata.dart';
-import 'package:newproject/resource/bloc/bloc.dart';
-import 'package:newproject/resource/database/database.dart';
-import 'package:newproject/search.dart';
-import 'package:newproject/stockwidget.dart';
-import 'package:newproject/main.dart';
+import 'package:MyStock/demodata.dart';
+import 'package:MyStock/resource/bloc/bloc.dart';
+import 'package:MyStock/resource/database/database.dart';
+import 'package:MyStock/search.dart';
+import 'package:MyStock/stockwidget.dart';
+import 'package:MyStock/main.dart';
 
 class MyHomeScreen extends StatefulWidget {
   @override
@@ -104,9 +104,9 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                   }
 
                 }).toList(),
-                favoriteData.map((f) {
+/*                favoriteData.map((f) {
                   return Text(f['symbol']);
-                }).toList(),
+                }).toList(),*/
               ].expand((f) => f).toList()
             : [
                 [

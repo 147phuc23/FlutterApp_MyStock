@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:newproject/flutter_candlesticks.dart';
-import 'package:newproject/main.dart';
-import 'package:newproject/resource/database/database.dart';
+import 'package:MyStock/flutter_candlesticks.dart';
+import 'package:MyStock/main.dart';
+import 'package:MyStock/resource/database/database.dart';
 
 class InforDetailsScreen extends StatefulWidget {
   final code;
@@ -30,6 +30,16 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
     return widget.sampleData[0]["open"].toDouble();
   }
 
+  Future<int> checkFavorite() async {
+    var check =
+        await DbProvider.db.checkIfSymbolIsFavorite(widget.code["symbol"]);
+    if (check)
+      widget.isFavorite = true;
+    else
+      widget.isFavorite = false;
+    return 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +48,7 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
           centerTitle: true,
           actions: <Widget>[
             FlatButton(
-              child: Icon(widget.isFavorite ? Icons.remove : Icons.add),
+              child: futureFavoriteButton(),
               onPressed: toggleFavorite,
             )
           ],
@@ -126,18 +136,30 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text(widget.code['open']==null?'':'Open: ${widget.code['open']}'),
-                      Text(widget.code['high']==null?'':'High: ${widget.code['high']}'),
-                      Text(widget.code['low']==null?'':'Low: ${widget.code['low']}'),
+                      Text(widget.code['open'] == null
+                          ? ''
+                          : 'Open: ${widget.code['open']}'),
+                      Text(widget.code['high'] == null
+                          ? ''
+                          : 'High: ${widget.code['high']}'),
+                      Text(widget.code['low'] == null
+                          ? ''
+                          : 'Low: ${widget.code['low']}'),
                     ],
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                   Column(
                     children: <Widget>[
-                      Text(widget.code['close']==null?'':'Close: ${widget.code['close']}'),
-                      Text(widget.code['marketCap']==null?'':'Mkt Cap: ${widget.code['marketCap']}'),
-                      Text(widget.code['peRatio']==null?"":'P/E ratio: ${widget.code['peRatio']}'),
+                      Text(widget.code['close'] == null
+                          ? ''
+                          : 'Close: ${widget.code['close']}'),
+                      Text(widget.code['marketCap'] == null
+                          ? ''
+                          : 'Mkt Cap: ${widget.code['marketCap']}'),
+                      Text(widget.code['peRatio'] == null
+                          ? ""
+                          : 'P/E ratio: ${widget.code['peRatio']}'),
                     ],
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +206,7 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
                 ],
               ),
               Container(
-                child: futureWidget(),
+                child: futureGraphWidget(),
                 height: 340,
                 width: MediaQuery.of(context).size.width,
               ),
@@ -193,7 +215,7 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
         ),
       );
 
-  Widget futureWidget() {
+  Widget futureGraphWidget() {
     return new FutureBuilder(
       future: fetchData(),
       builder: (context, snapshot) {
@@ -209,11 +231,30 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
           );
         } else if (snapshot.hasError) {
           return new Container(
-            child: new Text("This data is not available",style: TextStyle(fontSize: 20),),
+            child: new Text(
+              "This data is not available",
+              style: TextStyle(fontSize: 20),
+            ),
             alignment: Alignment.center,
           );
         } else
           return new CircularProgressIndicator();
+      },
+    );
+  }
+
+  Widget futureFavoriteButton() {
+    return new FutureBuilder(
+      future: checkFavorite(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          if (widget.isFavorite)
+            return Icon(Icons.remove);
+          else
+            return Icon(Icons.add);
+        } else{
+          return Icon(Icons.add);
+        }
       },
     );
   }
