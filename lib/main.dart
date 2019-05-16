@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:newproject/demodata.dart';
-import 'package:newproject/resource/database/database.dart';
-import 'package:newproject/resource/route/home_page.dart';
-import 'package:newproject/resource/route/login_screen.dart';
-import 'package:newproject/resource/route/settingscreen.dart';
+import 'package:MyStock/demodata.dart';
+import 'package:MyStock/resource/database/database.dart';
+import 'package:MyStock/resource/route/home_page.dart';
+import 'package:MyStock/resource/route/login_screen.dart';
+import 'package:MyStock/resource/route/settingscreen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 bool isLogedIn = false;
 
 void main() async {
-  top10data = await DbProvider.db.getTopSymbols();
-  List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
-  if (favoriteSymbol != null) {
-    var listRealInfo=await DbProvider.db.getListRealInfo(favoriteSymbol);
-    for(var f in listRealInfo){
-      favoriteData.add(f);
-    }
-  }
-  else
-    favoriteSymbol = [];
   runApp(MyApp());
 }
 
@@ -70,13 +61,43 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: isDarkTheme ? darkTheme : lightTheme,
-        home: LoginScreen(),
+        home: futureLoading(),
         routes: <String, WidgetBuilder>{
           '/home': (context) => MyHomeScreen(),
           '/login': (context) => LoginScreen(),
           '/setting': (context) => SettingScreen(toggleTheme),
         });
   }
+}
+
+Future<int> loadData() async {
+  top10data = await DbProvider.db.getTopSymbols();
+  List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
+  if (favoriteSymbol != null) {
+    var listRealInfo = await DbProvider.db.getListRealInfo(favoriteSymbol);
+    for (var f in listRealInfo) {
+      favoriteData.add(f);
+    }
+  } else
+    favoriteSymbol = [];
+  return 0;
+}
+
+Widget futureLoading() {
+  return new FutureBuilder(
+    future: loadData(),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) {
+        return new SpinKitWave(
+          color: Colors.blue,
+          type: SpinKitWaveType.center,
+          size: 100,
+        );
+      } else if (snapshot.hasData) {
+        return LoginScreen();
+      }
+    },
+  );
 }
 
 createAppBar(String x) => AppBar(

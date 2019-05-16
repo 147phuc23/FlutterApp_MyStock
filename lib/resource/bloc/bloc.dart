@@ -1,6 +1,6 @@
 import 'dart:async';
 import './login_info.dart';
-import 'package:newproject/resource/database/database.dart';
+import 'package:MyStock/resource/database/database.dart';
 import '../../demodata.dart';
 
 class AuthBloc {

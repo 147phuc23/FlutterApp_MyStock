@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:newproject/main.dart';
-import 'package:newproject/resource/route/login_screen.dart';
+import 'package:MyStock/main.dart';
+import 'package:MyStock/resource/route/login_screen.dart';
 
 class ScreenAccount extends StatefulWidget {
   @override

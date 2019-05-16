@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newproject/main.dart';
+import 'package:MyStock/main.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override

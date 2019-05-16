@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newproject/resource/route/detail_screen.dart';
+import 'package:MyStock/resource/route/detail_screen.dart';
 
 class StockWidget extends StatelessWidget {
   final Map code;

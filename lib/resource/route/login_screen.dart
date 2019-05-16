@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:newproject/resource/route/home_page.dart';
-import 'package:newproject/main.dart';
-import 'package:newproject/resource/bloc/bloc.dart';
-import 'package:newproject/resource/route/settingscreen.dart';
+import 'package:MyStock/resource/route/home_page.dart';
+import 'package:MyStock/main.dart';
+import 'package:MyStock/resource/bloc/bloc.dart';
+import 'package:MyStock/resource/route/settingscreen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
