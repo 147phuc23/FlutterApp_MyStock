@@ -74,7 +74,9 @@ class _MyAppState extends State<MyApp> {
 
 Future<int> loadData() async {
   top10data = await DbProvider.db.getTopSymbols();
-  if (isLoggedIn )List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList(logedInAccount.username);
+  if (isLoggedIn)
+    List<String> favoriteSymbol =
+        await DbProvider.db.getSymbolFromFavoriteList(logedInAccount.username);
   if (favoriteSymbol != null) {
     var listRealInfo = await DbProvider.db.getListRealInfo(favoriteSymbol);
     for (var f in listRealInfo) {

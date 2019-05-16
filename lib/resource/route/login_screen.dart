@@ -14,10 +14,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _userTextController = new TextEditingController();
   final _passTextController = new TextEditingController();
 
-  void _onSubmit() {
-    if (authBloc.isValidInfoSignIn(
-        _userTextController.text, _passTextController.text))
+  void _onSubmit() async {
+    if (await authBloc.isValidInfoSignIn(_userTextController.text,
+        _passTextController.text)) if (Navigator.of(context).canPop())
       Navigator.pushReplacementNamed(context, '/home');
+    else
+      Navigator.of(context).pushNamed('/home');
     isLoggedIn = true;
   }
 
@@ -121,6 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: StreamBuilder(
                             stream: authBloc.passStream,
                             builder: (context, snapshot) => TextField(
+                                  obscureText: true,
                                   controller: _passTextController,
                                   style: TextStyle(fontSize: 16),
                                   decoration: InputDecoration(
@@ -191,7 +194,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     authBloc.dispose();
   }

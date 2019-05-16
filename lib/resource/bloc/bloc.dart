@@ -12,7 +12,7 @@ class AuthBloc {
   Stream get userStream => _userController.stream;
   Stream get passStream => _passController.stream;
 
-  bool isValidInfoSignIn(String usr, String pwd) {
+  Future<bool> isValidInfoSignIn(String usr, String pwd) async{
     if (!AccountValidation.isValidUsername(usr)) {
       _userController.sink.addError("Tên đăng nhập không hợp lệ!");
       return false;
@@ -28,9 +28,9 @@ class AuthBloc {
     //   }
     // });
     // return x;
-    isValidAccount(usr, pwd);
-    if (isValidAccount(usr, pwd)) logedInAccount = new Account(usr, pwd);
-    return isValidAccount(usr, pwd);
+    if (await isValidAccount(usr, pwd)) logedInAccount = new Account(usr, pwd);
+    return await isValidAccount(usr, pwd);
+    ;
   }
 
   isValidAccount(usr, pwd) async {
@@ -38,7 +38,7 @@ class AuthBloc {
     return valid;
   }
 
-  bool isValidInfoSignUp(String usr, String pwd) {
+  Future<bool> isValidInfoSignUp(String usr, String pwd) async{
     if (!AccountValidation.isValidUsername(usr)) {
       _userController.sink.addError("Tên đăng nhập không hợp lệ!");
       return false;
@@ -56,7 +56,7 @@ class AuthBloc {
     //   }
     // // });
     // return x;
-    if (isValidInfoSignUpAccount(usr, pwd))
+    if (await isValidInfoSignUpAccount(usr, pwd))
       return true;
     else {
       _userController.sink.addError("Tên đăng nhập đã tồn tại!");

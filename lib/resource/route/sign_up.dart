@@ -43,6 +43,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Container(
                 padding: EdgeInsets.all(16),
                 child: TextField(
+                  obscureText: true,
                   controller: _passwordTextController,
                   decoration: InputDecoration(
                       labelText: "Password",
@@ -77,8 +78,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  _onSubmit() {
-    if (bloc.isValidInfoSignUp(
+  _onSubmit() async{
+    if (await bloc.isValidInfoSignUp(
         _usernameTextController.text, _passwordTextController.text)) {
       Account newAccount = new  Account(_usernameTextController.text,_passwordTextController.text);
       newAccount.name =  _nameTextController.text;
