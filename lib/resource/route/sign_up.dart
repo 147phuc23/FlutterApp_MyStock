@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:newproject/main.dart';
 import 'package:newproject/resource/bloc/bloc.dart';
+import 'package:newproject/resource/bloc/login_info.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -28,7 +29,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   builder: (context, snapshot) => TextField(
                         controller: _usernameTextController,
                         decoration: InputDecoration(
-                          errorText: snapshot.hasError? snapshot.error : null,
+                            errorText:
+                                snapshot.hasError ? snapshot.error : null,
                             labelText: "Username",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
@@ -74,8 +76,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   _onSubmit() {
-    if (bloc.isValidInfo(
-        _usernameTextController.text, _passwordTextController.text))
+    if (bloc.isValidInfoSignUp(
+        _usernameTextController.text, _passwordTextController.text)) {
+      Account newAccount = new  Account(_usernameTextController.text,_passwordTextController.text);
+      newAccount.name =  _nameTextController.text;
+      accountList.add(newAccount);
       Navigator.of(context).pushReplacementNamed('/home');
+      logedInAccount = newAccount;
+      isLogedIn = true;
+    }
   }
 }

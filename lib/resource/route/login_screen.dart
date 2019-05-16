@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:newproject/resource/route/home_page.dart';
 import 'package:newproject/main.dart';
 import 'package:newproject/resource/bloc/bloc.dart';
-import 'package:newproject/resource/route/settingscreen.dart';
 import 'package:newproject/resource/route/sign_up.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,7 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passTextController = new TextEditingController();
 
   void _onSubmit() {
-    if (authBloc.isValidInfo(
+    if (authBloc.isValidInfoSignIn(
         _userTextController.text, _passTextController.text))
       Navigator.pushReplacementNamed(context, '/home');
     isLogedIn = true;
@@ -198,6 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onSignUp() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SignUpScreen()));
   }
 }

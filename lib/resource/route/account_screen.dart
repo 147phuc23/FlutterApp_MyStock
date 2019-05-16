@@ -51,19 +51,21 @@ class _ScreenAccountState extends State<ScreenAccount> {
             ))),
             Card(
               child: SizedBox(
-                width: double.infinity,                
+                width: double.infinity,
                 child: FlatButton(
                   onPressed: () {
+                    logedInAccount = null; 
+                    isLogedIn = false;  
                     Navigator.pop(context);
                     Navigator.pop(context);
-                    Navigator.pop(context); 
-                    isLogedIn = false;
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                    Navigator.pop(context);                    
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()));
                   },
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
                     child: Text(
-                      'Sign out',
+                      'Log out',
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.w100),
                     ),

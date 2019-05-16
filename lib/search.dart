@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:newproject/resource/bloc/bloc.dart';
 import 'package:newproject/resource/database/database.dart';
 import 'package:newproject/resource/route/detail_screen.dart';
-import 'package:path/path.dart';
 
 class CodeSearch extends SearchDelegate<Map> {
   SearchBloc bloc;

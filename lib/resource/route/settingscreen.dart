@@ -59,7 +59,8 @@ class _SettingScreenState extends State<SettingScreen> {
             child: SizedBox(
                 width: double.infinity,                
                 child: FlatButton(
-                  onPressed: () {                    
+                  onPressed: () {        
+                             
                     Navigator.pop(context);
                     Navigator.pop(context);
                     if (Navigator.of(context).canPop()) Navigator.of(context).pop();

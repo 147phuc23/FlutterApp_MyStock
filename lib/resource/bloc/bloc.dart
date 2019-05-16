@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'package:newproject/main.dart';
+
 import './login_info.dart';
 import 'package:newproject/resource/database/database.dart';
-import '../../demodata.dart';
 
 class AuthBloc {
   StreamController _userController = new StreamController();
@@ -10,22 +11,42 @@ class AuthBloc {
   Stream get userStream => _userController.stream;
   Stream get passStream => _passController.stream;
 
-  bool isValidInfo(String usr, String pwd) {
-    // if (!AccountValidation.isValidUsername(usr)) {
-    //   _userController.sink.addError("Tên đăng nhập không hợp lệ!");
-    //   return false;
-    // }
-    // if (!AccountValidation.isValidPassword(pwd)) {
-    //   _passController.sink.addError("Mật khẩu không hợp lệ!");
-    //   return false;
-    // }
+  bool isValidInfoSignIn(String usr, String pwd) {
+    if (!AccountValidation.isValidUsername(usr)) {
+      _userController.sink.addError("Tên đăng nhập không hợp lệ!");
+      return false;
+    }
+    if (!AccountValidation.isValidPassword(pwd)) {
+      _passController.sink.addError("Mật khẩu không hợp lệ!");
+      return false;
+    }
+    bool x = false;
     accountList.forEach((f) {
-      print("${f.username}  $usr");
-      print("${f.password}  $pwd");
-      if (f.username == usr) if (f.password == pwd) return true;
+      if (f.username == usr) if (f.password == pwd) {
+        x = true;
+      }
     });
-    print("out");
-    return false;
+    return x;
+  }
+
+  bool isValidInfoSignUp(String usr, String pwd) {
+    if (!AccountValidation.isValidUsername(usr)) {
+      _userController.sink.addError("Tên đăng nhập không hợp lệ!");
+      return false;
+    }
+    if (!AccountValidation.isValidPassword(pwd)) {
+      _passController.sink.addError("Mật khẩu không hợp lệ!");
+      return false;
+    }
+    bool x = true;
+    accountList.forEach((f) {
+      if (f.username == usr) {
+        x = false;
+        logedInAccount = f;
+        _userController.sink.addError("Tên đăng nhập đã tồn tại!");
+      }
+    });
+    return x;
   }
 
   void dispose() {

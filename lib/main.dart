@@ -5,11 +5,13 @@ import 'package:newproject/resource/route/home_page.dart';
 import 'package:newproject/resource/route/login_screen.dart';
 import 'package:newproject/resource/route/settingscreen.dart';
 
-bool isLogedIn = false;
+import 'resource/bloc/login_info.dart';
 
+bool isLogedIn = false;
+Account logedInAccount;
 void main() async {
   top10data = await DbProvider.db.getTopSymbols();
-  List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList();
+  accountList[0].favoriteList = await DbProvider.db.getSymbolFromFavoriteList();
   if (favoriteSymbol != null) {
     var listRealInfo=await DbProvider.db.getListRealInfo(favoriteSymbol);
     for(var f in listRealInfo){
