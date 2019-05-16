@@ -77,8 +77,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  _onSubmit() {
-    if (bloc.isValidInfoSignUp(
+  _onSubmit() async{
+    if (await bloc.isValidInfoSignUp(
         _usernameTextController.text, _passwordTextController.text)) {
       Account newAccount = new  Account(_usernameTextController.text,_passwordTextController.text);
       newAccount.name =  _nameTextController.text;

@@ -14,8 +14,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _userTextController = new TextEditingController();
   final _passTextController = new TextEditingController();
 
-  void _onSubmit() {
-    if (authBloc.isValidInfoSignIn(
+  void _onSubmit() async{
+    if (await authBloc.isValidInfoSignIn(
         _userTextController.text, _passTextController.text))
       Navigator.pushReplacementNamed(context, '/home');
     isLoggedIn = true;
