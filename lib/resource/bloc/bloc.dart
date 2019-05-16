@@ -29,7 +29,7 @@ class AuthBloc {
     // });
     // return x;
     if (await isValidAccount(usr, pwd)) logedInAccount = new Account(usr, pwd);
-    return isValidAccount(usr, pwd);
+    return await isValidAccount(usr, pwd);
     ;
   }
 
