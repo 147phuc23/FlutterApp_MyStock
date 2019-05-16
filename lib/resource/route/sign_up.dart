@@ -1,12 +1,8 @@
+import 'package:MyStock/resource/bloc/bloc.dart';
+import 'package:MyStock/resource/bloc/login_info.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:newproject/main.dart';
-import 'package:newproject/resource/bloc/bloc.dart';
-import 'package:newproject/resource/bloc/login_info.dart';
-=======
-  import 'package:MyStock/resource/bloc/bloc.dart';
-import 'package:MyStock/main.dart';
->>>>>>> a76589e61798dd09d4a585e2fcfc09ec5da23483
+
+import '../../main.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override

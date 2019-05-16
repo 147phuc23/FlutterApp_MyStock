@@ -720,7 +720,6 @@ class DbProvider {
   Future<bool> checkIfSymbolIsFavorite(String symbol)async{
     var db=await database;
     var data = await db.query("FavoriteList",where: "symbol=?",whereArgs: [symbol]);
-    print("checkIfSymbolIsFavorite::${data.first}");
     if(data.isNotEmpty) return true;
     else return false;
   }

@@ -1,13 +1,9 @@
 import 'dart:async';
-import 'package:newproject/main.dart';
+import 'package:MyStock/main.dart';
 
 import './login_info.dart';
-<<<<<<< HEAD
-import 'package:newproject/resource/database/database.dart';
-=======
 import 'package:MyStock/resource/database/database.dart';
 import '../../demodata.dart';
->>>>>>> a76589e61798dd09d4a585e2fcfc09ec5da23483
 
 class AuthBloc {
   StreamController _userController = new StreamController();

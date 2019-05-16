@@ -15,8 +15,7 @@ class InforDetailsScreen extends StatefulWidget {
 
 class _InforDetailsScreenState extends State<InforDetailsScreen> {
   String _graphMode = "1 month";
-
-  Future<double> fetchData() async {
+  Future<void> fetchData() async {
     switch (_graphMode) {
       case "1 month":
         widget.sampleData =
@@ -27,7 +26,7 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
             await DbProvider.db.getChartInfo_1d(widget.code["symbol"]);
         break;
     }
-    return widget.sampleData[0]["open"].toDouble();
+    return 0;
   }
 
   Future<int> checkFavorite() async {
@@ -46,12 +45,12 @@ class _InforDetailsScreenState extends State<InforDetailsScreen> {
         appBar: AppBar(
           textTheme: isDarkTheme ? darkTheme.textTheme : lightTheme.textTheme,
           centerTitle: true,
-          actions: <Widget>[
+          actions: isLogedIn ? <Widget>[
             FlatButton(
               child: futureFavoriteButton(),
               onPressed: toggleFavorite,
             )
-          ],
+          ]: <Widget>[],
           title: Title(
             color: isDarkTheme ? Color(0xff190e18) : Color(0xffced9d2),
             child: Text(
