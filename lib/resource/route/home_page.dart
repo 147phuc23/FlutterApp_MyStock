@@ -5,6 +5,7 @@ import 'package:MyStock/resource/database/database.dart';
 import 'package:MyStock/search.dart';
 import 'package:MyStock/stockwidget.dart';
 import 'package:MyStock/main.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class MyHomeScreen extends StatefulWidget {
   @override
@@ -17,41 +18,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: FlatButton(
-          child: Icon(Icons.menu),
-          onPressed: () {
-            Navigator.pushNamed(context, '/setting');
-          }, //Navigator(),
-        ),
-        centerTitle: true,
-        title: Title(
-          color: Theme.of(context).primaryColor,
-          child: Text(
-            "Main App",
-            style: TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 20,
-              color: Colors.blueGrey,
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: CodeSearch(SearchBloc()));
-            },
-          )
-        ],
-        backgroundColor:
-            isDarkTheme ? darkTheme.primaryColor : lightTheme.primaryColor,
-      ),
-      body: Container(
-        child: buildListView(),
-      ),
-    );
+    return futureLoading();
   }
 
   ThemeData createAppBarTheme(BuildContext context) {
@@ -124,19 +91,79 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               ].expand((f) => f).toList(),
       ),
       onRefresh: () async {
-        top10data = await DbProvider.db.getTopSymbols();
-        List<String> favoriteSymbol = await DbProvider.db.getSymbolFromFavoriteList(logedInAccount.username);
-        favoriteData=[];
-        if (favoriteSymbol != null) {
-          var listRealInfo=await DbProvider.db.getListRealInfo(favoriteSymbol);
-          for(var f in listRealInfo){
-            favoriteData.add(f);
-          }
-        }
-        else
-          favoriteSymbol = [];
-        setState(() {});
+        await refreshData();
+        setState(() {
+
+        });
       },
     );
   }
+  Future<int> refreshData()async{
+    top10data = await DbProvider.db.getTopSymbols();
+    if(isLoggedIn) {
+      List<String> favoriteSymbol = await DbProvider.db
+          .getSymbolFromFavoriteList(logedInAccount.username);
+      favoriteData = [];
+      if (favoriteSymbol != null) {
+        var listRealInfo = await DbProvider.db.getListRealInfo(
+            favoriteSymbol);
+        for (var f in listRealInfo) {
+          favoriteData.add(f);
+        }
+      }
+      else
+        favoriteSymbol = [];
+    }
+    return 0;
+  }
+  Widget futureLoading() {
+    return new FutureBuilder(
+      future: refreshData(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return new SpinKitDualRing(
+            color: Colors.blue,
+            size: 100,
+          );
+        } else{
+          return Scaffold(
+            appBar: AppBar(
+              leading: FlatButton(
+                child: Icon(Icons.menu),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/setting');
+                }, //Navigator(),
+              ),
+              centerTitle: true,
+              title: Title(
+                color: Theme.of(context).primaryColor,
+                child: Text(
+                  "Main App",
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 20,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Icon(Icons.search),
+                  onPressed: () {
+                    showSearch(context: context, delegate: CodeSearch(SearchBloc()));
+                  },
+                )
+              ],
+              backgroundColor:
+              isDarkTheme ? darkTheme.primaryColor : lightTheme.primaryColor,
+            ),
+            body: Container(
+              child: buildListView(),
+            ),
+          );
+        }
+      },
+    );
+  }
+
 }
