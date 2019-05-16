@@ -11,19 +11,21 @@ class AuthBloc {
   Stream get passStream => _passController.stream;
 
   bool isValidInfo(String usr, String pwd) {
-    return true;
-    if (!AccountValidation.isValidUsername(usr)) {
-      _userController.sink.addError("Tên đăng nhập không hợp lệ!");
-      return false;
-    }
-    if (!AccountValidation.isValidPassword(pwd)) {
-      _passController.sink.addError("Mật khẩu không hợp lệ!");
-      return false;
-    }
+    // if (!AccountValidation.isValidUsername(usr)) {
+    //   _userController.sink.addError("Tên đăng nhập không hợp lệ!");
+    //   return false;
+    // }
+    // if (!AccountValidation.isValidPassword(pwd)) {
+    //   _passController.sink.addError("Mật khẩu không hợp lệ!");
+    //   return false;
+    // }
     accountList.forEach((f) {
+      print("${f.username}  $usr");
+      print("${f.password}  $pwd");
       if (f.username == usr) if (f.password == pwd) return true;
     });
-    return false; 
+    print("out");
+    return false;
   }
 
   void dispose() {
@@ -50,6 +52,6 @@ class SearchBloc {
 }
 
 class AccountValidation {
-  static bool isValidUsername(String usrname) => usrname.length > 6;
-  static bool isValidPassword(String pwd) => pwd.length > 6;
+  static bool isValidUsername(String usrname) => usrname.length >= 6;
+  static bool isValidPassword(String pwd) => pwd.length >= 6;
 }

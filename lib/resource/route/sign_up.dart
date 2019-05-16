@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+  import 'package:MyStock/resource/bloc/bloc.dart';
 import 'package:MyStock/main.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -10,10 +11,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _usernameTextController = new TextEditingController();
   TextEditingController _passwordTextController = new TextEditingController();
   TextEditingController _nameTextController = new TextEditingController();
+  AuthBloc bloc = new AuthBloc();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: createAppBar("Sign Up"),
+      appBar: createAppBar("SIGN UP"),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -21,22 +23,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(16),
+                child: StreamBuilder(
+                  stream: bloc.userStream,
+                  builder: (context, snapshot) => TextField(
+                        controller: _usernameTextController,
+                        decoration: InputDecoration(
+                          errorText: snapshot.hasError? snapshot.error : null,
+                            labelText: "Username",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            )),
+                      ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(16),
                 child: TextField(
-                  controller: _usernameTextController,
+                  controller: _passwordTextController,
                   decoration: InputDecoration(
-                      labelText: "Username",
+                      labelText: "Password",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
                       )),
                 ),
               ),
-              SizedBox(        
+              Container(
+                padding: EdgeInsets.all(16),
+                child: TextField(
+                  controller: _nameTextController,
+                  decoration: InputDecoration(
+                      labelText: "Name",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      )),
+                ),
+              ),
+              SizedBox(
                 width: double.infinity,
-                height: 20,
+                height: 50,
                 child: RaisedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacementNamed('/login');
-                  },
+                  onPressed: _onSubmit,
                   child: Text("Submit"),
                 ),
               )
@@ -45,5 +71,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  _onSubmit() {
+    if (bloc.isValidInfo(
+        _usernameTextController.text, _passwordTextController.text))
+      Navigator.of(context).pushReplacementNamed('/home');
   }
 }

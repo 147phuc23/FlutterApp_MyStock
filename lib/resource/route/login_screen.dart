@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:MyStock/resource/route/home_page.dart';
 import 'package:MyStock/main.dart';
 import 'package:MyStock/resource/bloc/bloc.dart';
 import 'package:MyStock/resource/route/settingscreen.dart';
+import 'package:MyStock/resource/route/sign_up.dart';
+
+
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -170,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       FlatButton(
-                        onPressed: _onSubmitAsGuest,
+                        onPressed: _onSignUp,
                         child: Container(
                             child: Text('Sign Up',
                                 style: TextStyle(
@@ -194,5 +198,9 @@ class _LoginScreenState extends State<LoginScreen> {
     // TODO: implement dispose
     super.dispose();
     authBloc.dispose();
+  }
+
+  void _onSignUp() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
   }
 }
